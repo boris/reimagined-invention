@@ -13,14 +13,16 @@ a third (copy/paste from Flask documentation).
 
 ### DB relationships:
 
-- Author -> Book should be a many-to-many relationship as multiple authors can
-    share the ownership of a book.
-    For example, authors A and B wrote the book X. When listing all the books
-    written by author A, book X must appear in the results. Likewise when
-    listing the books written by author B.
-    If we want to use a one-to-one relationship, the book X should only be
-    returned as part of the results if we search by "the books written by author
-    A **and** author B" working together.
+ _Author -> Book_ should be a many-to-many relationship as multiple authors can
+share the ownership of a book.
+
+For example, authors A and B wrote the book X. When listing all the books
+written by author A, book X must appear in the results. Likewise when
+listing the books written by author B.
+
+If we want to use a one-to-one relationship, the book X should only be
+returned as part of the results if we search by "the books written by author
+A **and** author B" working together.
 
 ## Usage
 ```
