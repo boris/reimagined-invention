@@ -1,0 +1,5 @@
+auth:
+  secret_key: super-secret-random-key
+
+db:
+  uri: mysql://user:passwd@host/db
