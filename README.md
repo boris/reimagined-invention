@@ -10,3 +10,7 @@ structure](https://exploreflask.com/en/latest/blueprints.html#functional-structu
 to organize the files of the project according to what they do. This means that
 templates are grouped together in one directory, static in another and views in
 a third (copy/paste from Flask documentation).
+
+I'll also be using [application
+factories](https://flask.palletsprojects.com/en/2.1.x/patterns/appfactories/)
+functions such as `create_app`
