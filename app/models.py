@@ -17,3 +17,9 @@ class Book(db.Model):
     shared = db.Column(db.Boolean, default=False)
     rating = db.Column(db.Integer)
     id_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    id_author = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
+
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    country = db.Column(db.String(255))
