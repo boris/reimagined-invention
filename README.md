@@ -24,6 +24,9 @@ If we want to use a one-to-one relationship, the book X should only be
 returned as part of the results if we search by "the books written by author
 A **and** author B" working together.
 
+See [PR/3](https://github.com/boris/reimagined-invention/pull/3) for
+documentation about v0.1.0 release.
+
 ## Usage
 ```
 flask --app app --debug run
