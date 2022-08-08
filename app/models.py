@@ -28,3 +28,13 @@ class Author(db.Model):
 class Editorial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
+
+# many-to-many books/tags
+tags = db.Table('books_tags',
+                db.Column('id_tag', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+                db.Column('id_book', db.Integer, db.ForeignKey('book.id'), primary_key=True)
+        )
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), primary_key=True)
