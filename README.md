@@ -13,7 +13,7 @@ a third (copy/paste from Flask documentation).
 
 ### DB relationships:
 
- _Author -> Book_ should be a many-to-many relationship as multiple authors can
+ **Author -> Book** should be a many-to-many relationship as multiple authors can
 share the ownership of a book.
 
 For example, authors A and B wrote the book X. When listing all the books
