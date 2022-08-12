@@ -1,5 +1,44 @@
 {% extends "base.html" %}
 
 {% block content%}
-This is the index of an authenticated user: {{ email }}
+
+<div class="hero-body">
+    <div class="container has-text-justified">
+        <h1 class="title is-1">
+            Hola, {{ name }}!
+        </h1>
+        <br>
+        <div class="block">
+            <h2 class="subtitle">
+                <i>"Saber que tienes algo bueno para leer antes de irte a la cama es una de las sensaciones más agradables"</i>.
+                <br>
+                <b>Vladimir Nabokov.</b>
+            </h2>
+        </div>
+
+        <br>
+
+        <h1 class="title is-3">Estadísticas:</h1>
+        <div class="table-container">
+            <table class="table is-fullwidth is-stripped">
+                <tbody>
+                    <tr class="has-background-primary-light">
+                        <th>Libros registrados</th>
+                        <th>Libros leídos</th>
+                        <th>Libros sin leer</th>
+                        <th>Libros prestados</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}
