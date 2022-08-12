@@ -18,7 +18,7 @@
                         <div id="navbarMenuHeroA" class="navbar-menu">
                             <div class="navbar-start">
                                 {% if current_user.is_authenticated %}
-                                <p class="navbar-item">{{ email }}</p>
+                                <p class="navbar-item">Hola, {{ email }}</p>
                                 {% endif %}
                             </div>
                             <div class="navbar-end">
@@ -39,8 +39,8 @@
                 </nav>
             </div>
 
-            <div class="hero-body">
-                <div class="container">
+            <div class="hero-body is-fluid">
+                <div class="container is-fluid">
                     {% block content %}
                     {% endblock %}
                 </div>
