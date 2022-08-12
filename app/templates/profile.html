@@ -22,17 +22,17 @@
         <div class="table-container">
             <table class="table is-fullwidth is-stripped">
                 <tbody>
-                    <tr class="has-background-primary-light">
+                    <tr class="has-background-success-light">
                         <th>Libros registrados</th>
                         <th>Libros leídos</th>
                         <th>Libros sin leer</th>
                         <th>Libros prestados</th>
                     </tr>
                     <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <td>{{ books_total }}</td>
+                        <td>{{ books_read }}</td>
+                        <td>{{ books_unread }}</td>
+                        <td>{{ books_shared }}</td>
                     </tr>
                 </tbody>
             </table>
