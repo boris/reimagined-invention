@@ -23,7 +23,6 @@ app.config.from_mapping(
     SQLALCHEMY_DATABASE_URI=config['db']['uri'],
 )
 
-
 # DB def and init
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
