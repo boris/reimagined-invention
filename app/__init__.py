@@ -22,7 +22,7 @@ app.config.from_mapping(
     SECRET_KEY=config['auth']['secret_key'],
     SQLALCHEMY_DATABASE_URI=config['db']['uri'],
 )
-
+app.config['MYSQL_CHARSET'] = 'utf8mb4'
 
 # DB def and init
 db = SQLAlchemy(app)
