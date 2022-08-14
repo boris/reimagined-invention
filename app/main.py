@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import User, Book
+from .models import User, Book, Author, Editorial
 from . import db
 
 main = Blueprint('main', __name__)
@@ -21,9 +21,22 @@ def profile():
 
     return render_template('profile.html',
                            name = current_user.name,
-                           email = current_user.email,
+                           greeting = current_user.email,
                            books_total = books_total,
                            books_read = books_read,
                            books_unread = books_unread,
                            books_shared = books_shared,
+                           )
+
+@main.route('/books')
+def books():
+
+    filtered_books = db.session.query(Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
+                        .join(Author)\
+                        .join(Editorial)\
+                        .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))
+
+    return render_template('books.html',
+                           greeting = current_user.name,
+                           books = filtered_books,
                            )
