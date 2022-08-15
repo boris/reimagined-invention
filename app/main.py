@@ -43,4 +43,28 @@ def books():
                            books = filtered_books,
                            )
     else:
+        # Fix this route!!
         return redirect(url_for('main.login'))
+
+@main.route('/add_book')
+def add_book():
+    if current_user.is_authenticated:
+        return render_template('add_book.html',
+                               greeting = current_user.name,
+                               )
+    else:
+        return redirect(url_for('auth.login'))
+
+@main.route('/add_book', methods = ['POST'])
+def add_book_post():
+    if current_user.is_authenticated:
+        author_name = request.form.get("author_name")
+        author_country = request.form.get("author_country")
+        author = Author(country=author_country, name=author_name)
+        db.session.add(author)
+        db.session.commit()
+
+        return redirect(url_for('main.add_book'))
+
+    else:
+        return redirect(url_for('auth.login'))
