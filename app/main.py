@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 
@@ -68,6 +68,9 @@ def add_book_post():
             author = Author(country=author_country, name=author_name)
             db.session.add(author)
             db.session.commit()
+            id_author = db.session.query(Author.id).filter(Author.name == author_name)
+
+        id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
         # Check editorial details and existence
         editorial_name = request.form.get("editorial_name")
@@ -77,9 +80,51 @@ def add_book_post():
             editorial = Editorial(name=editorial_name)
             db.session.add(editorial)
             db.session.commit()
+            id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
+
+        id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
+
+        # Add Book
+        book_title = request.form.get('book_title')
+        book_genre = request.form.get('book_genre')
+        book_year = request.form.get('book_year')
+        book_pages = request.form.get('book_year')
+        book_rating = request.form.get('book_rating')
+
+        if request.form.get('book_is_read').lower() == 'si':
+            is_read = True
+        else:
+            is_read = False
+
+        if request.form.get('book_is_shared').lower() == 'si':
+            is_shared = True
+        else:
+            is_shared = False
+
+        book = Book(title = book_title,
+                    genre = book_genre,
+                    year = book_year,
+                    pages = book_pages,
+                    read = is_read,
+                    shared = is_shared,
+                    rating = book_rating,
+                    id_user = current_user.id,
+                    id_author = id_author,
+                    id_editorial = id_editorial,
+                    )
+        db.session.add(book)
+        db.session.commit()
 
 
+        # Later this should redirect to 'main.book/book_id' or something like that
         return redirect(url_for('main.add_book'))
 
     else:
         return redirect(url_for('auth.login'))
+
+
+@main.route('/test_utf8/')
+def test_utf8():
+    editorial_list = db.session.query(Editorial.name).filter(Editorial.id == 10).first()
+
+    return str(editorial_list)
