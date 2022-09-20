@@ -36,7 +36,8 @@ def books():
         filtered_books = db.session.query(Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
             .join(Author)\
             .join(Editorial)\
-            .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))
+            .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
+            .order_by(Author.name.asc())
 
         return render_template('books.html',
                            greeting = current_user.name,
