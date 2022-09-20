@@ -2,6 +2,7 @@ import os
 import yaml
 from os import path
 from flask import Flask
+from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
@@ -22,6 +23,9 @@ app.config.from_mapping(
     SECRET_KEY=config['auth']['secret_key'],
     SQLALCHEMY_DATABASE_URI=config['db']['uri'],
 )
+
+# Boostrap
+bootstrap = Bootstrap5(app)
 
 # DB def and init
 db = SQLAlchemy(app)
