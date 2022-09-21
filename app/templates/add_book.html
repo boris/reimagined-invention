@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="hero-body">
+<div class="body">
     <div class="container has-test-justified">
-        <div class="block">
+        <div class="container">
             <h1 class="title is-1">Agregar nuevo libro</h1>
-        </div>
 
         <form method="POST" action="/add_book" style="width: 50%">
             <input class="input is-medium" type="text" name="book_title" placeholder="Título"><br></br>
@@ -15,13 +14,14 @@
             <input class="input is-medium" type="text" name="editorial_name" placeholder="Editorial"><br></br>
             <input class="input is-medium" type="text" name="book_year" placeholder="Año"><br></br>
             <input class="input is-medium" type="number" name="book_pages" placeholder="Número de páginas"><br></br>
-            <input class="input is-medium" type="text" name="book_is_read" placeholder="¿Leído?"><br></br>
-            <input class="input is-medium" type="text" name="book_is_shared" placeholder="¿Prestado?"><br></br>
+            <input class="input is-medium" type="text" name="book_is_read" placeholder="¿Leído? (Si/No)"><br></br>
+            <input class="input is-medium" type="text" name="book_is_shared" placeholder="¿Prestado? (Si/No)"><br></br>
             <input class="input is-medium" type="number" name="book_rating" placeholder="Puntuación"><br></br>
             <input class="input is-medium" type="text" name="tags" placeholder="Tags (separadas por coma)"><br></br>
             <br></br>
             <button class="button is-block is-info is-medium">Agregar</button>
         </form>
+        </div>
     </div>
 </div>
 {% endblock %}

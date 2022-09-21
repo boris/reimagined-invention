@@ -21,7 +21,7 @@ def profile():
 
         return render_template('profile.html',
                                name = current_user.name,
-                               greeting = current_user.email,
+                               greeting = current_user.name,
                                books_total = books_total,
                                books_read = books_read,
                                books_unread = books_unread,
@@ -30,7 +30,7 @@ def profile():
     else:
         return redirect(url_for('auth.login'))
 
-@main.route('/books')
+@main.route('/my_books')
 def books():
     if current_user.is_authenticated:
         filtered_books = db.session.query(Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
@@ -39,7 +39,7 @@ def books():
             .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
             .order_by(Author.name.asc())
 
-        return render_template('books.html',
+        return render_template('my_books.html',
                            greeting = current_user.name,
                            books = filtered_books,
                            )
@@ -55,6 +55,7 @@ def add_book():
                                )
     else:
         return redirect(url_for('auth.login'))
+
 
 @main.route('/add_book', methods = ['POST'])
 def add_book_post():
