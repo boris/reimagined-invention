@@ -19,7 +19,7 @@
                     {% for book in books %}
                     <tr>
                         <th>{{ book.author_name }}</th>
-                        <th>{{ book.title }}</th>
+                        <th><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></th>
                         <th>{{ book.rating }}</th>
                         <th>{{ book.genre }}</th>
                         <th>{{ book.editorial_name }}</th>
