@@ -90,7 +90,7 @@ def add_book_post():
         book_title = request.form.get('book_title')
         book_genre = request.form.get('book_genre')
         book_year = request.form.get('book_year')
-        book_pages = request.form.get('book_year')
+        book_pages = request.form.get('book_pages')
         book_rating = request.form.get('book_rating')
 
         if request.form.get('book_is_read').lower() == 'si':
