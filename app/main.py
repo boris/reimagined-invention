@@ -21,7 +21,7 @@ def profile():
 
         return render_template('profile.html',
                                name = current_user.name,
-                               greeting = current_user.email,
+                               greeting = current_user.name,
                                books_total = books_total,
                                books_read = books_read,
                                books_unread = books_unread,
