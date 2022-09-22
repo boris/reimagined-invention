@@ -46,7 +46,7 @@ def signup_post():
     # create the new user with the form data
     new_user = User(name=name,
                     email=email,
-                    password_hash=generate_password_hash(password, method='sha256'),
+                    password_hash=generate_password_hash(password_hash, method='sha256'),
                     )
 
     # add the new user to the db
