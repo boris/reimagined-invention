@@ -33,7 +33,7 @@ def profile():
 @main.route('/my_books')
 def books():
     if current_user.is_authenticated:
-        filtered_books = db.session.query(Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
+        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
             .join(Author)\
             .join(Editorial)\
             .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
@@ -46,6 +46,24 @@ def books():
     else:
         # Fix this route!!
         return redirect(url_for('main.login'))
+
+
+@main.route('/show_book/<int:book_id>')
+def show_book(book_id):
+    if current_user.is_authenticated:
+        current_book = db.session.query(Book.title, Book.genre, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'))\
+            .filter(Book.id == book_id)\
+            .join(Author)\
+            .join(Editorial)
+
+        return render_template('show_book.html',
+                               greeting = current_user.name,
+                               book = current_book,
+                               )
+
+    else:
+        return redirect(url_for('main.login'))
+
 
 @main.route('/add_book')
 def add_book():
@@ -90,7 +108,7 @@ def add_book_post():
         book_title = request.form.get('book_title')
         book_genre = request.form.get('book_genre')
         book_year = request.form.get('book_year')
-        book_pages = request.form.get('book_year')
+        book_pages = request.form.get('book_pages')
         book_rating = request.form.get('book_rating')
 
         if request.form.get('book_is_read').lower() == 'si':
@@ -119,7 +137,7 @@ def add_book_post():
 
 
         # Later this should redirect to 'main.book/book_id' or something like that
-        return redirect(url_for('main.add_book'))
+        return redirect(url_for('main.show_book', book_id = book.id))
 
     else:
         return redirect(url_for('auth.login'))
