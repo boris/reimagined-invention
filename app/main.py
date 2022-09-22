@@ -47,6 +47,24 @@ def books():
         # Fix this route!!
         return redirect(url_for('main.login'))
 
+
+@main.route('/show_book/<int:book_id>')
+def show_book(book_id):
+    if current_user.is_authenticated:
+        current_book = db.session.query(Book.title, Book.genre, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'))\
+            .filter(Book.id == book_id)\
+            .join(Author)\
+            .join(Editorial)
+
+        return render_template('show_book.html',
+                               greeting = current_user.name,
+                               book = current_book,
+                               )
+
+    else:
+        return redirect(url_for('main.login'))
+
+
 @main.route('/add_book')
 def add_book():
     if current_user.is_authenticated:
@@ -119,7 +137,7 @@ def add_book_post():
 
 
         # Later this should redirect to 'main.book/book_id' or something like that
-        return redirect(url_for('main.add_book'))
+        return redirect(url_for('main.show_book', book_id = book.id))
 
     else:
         return redirect(url_for('auth.login'))
