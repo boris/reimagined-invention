@@ -33,3 +33,6 @@ flask --app app --debug run
 flask --app app --debug db migrate
 flask --app app --debug db upgrade
 ```
+
+## Sample DB
+Sample DB has been added. On mysql create a new DB and restore using the dump.
