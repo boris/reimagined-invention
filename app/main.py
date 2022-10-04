@@ -33,7 +33,7 @@ def profile():
 @main.route('/my_books')
 def books():
     if current_user.is_authenticated:
-        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
+        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.genre, Book.id_author, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
             .join(Author)\
             .join(Editorial)\
             .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
