@@ -33,7 +33,7 @@ def profile():
 @main.route('/my_books')
 def books():
     if current_user.is_authenticated:
-        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
+        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.genre, Book.id_author, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
             .join(Author)\
             .join(Editorial)\
             .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
@@ -46,6 +46,22 @@ def books():
     else:
         # Fix this route!!
         return redirect(url_for('main.login'))
+
+
+@main.route('/show_author/<int:author_id>')
+def show_author(author_id):
+    if current_user.is_authenticated:
+        current_author = db.session.query(Author.name, Author.country).filter(Author.id == author_id)
+        author_books = db.session.query(Book.id, Book.title, Book.genre, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'))\
+            .filter(Book.id_author == author_id)\
+            .join(Author)\
+            .join(Editorial)
+
+        return render_template('show_author.html',
+                               greeting = current_user.name,
+                               author = current_author,
+                               books = author_books,
+                               )
 
 
 @main.route('/show_book/<int:book_id>')
