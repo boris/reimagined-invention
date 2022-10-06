@@ -123,6 +123,18 @@ def add_book_post():
 
         id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
 
+        # Check genre existence
+        genre_name = request.form.get("genre_name")
+        genre_exists = Genre.query.filter_by(name=genre_name).first()
+
+        if not genre_exists:
+            genre = Genre(name=genre_name)
+            db.session.add(genre)
+            db.session.commit()
+            id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+
+        id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+
         # Add Book
         book_title = request.form.get('book_title')
         book_genre = request.form.get('book_genre')
