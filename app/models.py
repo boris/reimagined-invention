@@ -10,7 +10,6 @@ class User(UserMixin, db.Model):
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    genre = db.Column(db.String(255))
     year = db.Column(db.Integer)
     pages = db.Column(db.Integer)
     read = db.Column(db.Boolean, default=False)
@@ -19,6 +18,7 @@ class Book(db.Model):
     id_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     id_author = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
     id_editorial = db.Column(db.Integer, db.ForeignKey('editorial.id'), nullable=False)
+    id_genre = db.Column(db.Integer, db.ForeignKey('genre.id'), nullable=False)
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,5 +36,9 @@ tags = db.Table('books_tags',
         )
 
 class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), primary_key=True)
+
+class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), primary_key=True)

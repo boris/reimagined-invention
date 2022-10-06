@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import User, Book, Author, Editorial
+from .models import User, Book, Author, Editorial, Genre
 from . import db
 
 main = Blueprint('main', __name__)
