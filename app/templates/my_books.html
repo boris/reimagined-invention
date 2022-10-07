@@ -21,7 +21,7 @@
                         <th><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{ book.author_name }}</a></th>
                         <th><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></th>
                         <th>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe }}</th>
-                        <th>{{ book.genre }}</th>
+                        <th>{{ book.genre_name }}</th>
                         <th>{{ book.editorial_name }}</th>
                     </tr>
                     {% endfor %}

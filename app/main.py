@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import User, Book, Author, Editorial
+from .models import User, Book, Author, Editorial, Genre
 from . import db
 
 main = Blueprint('main', __name__)
@@ -33,9 +33,10 @@ def profile():
 @main.route('/my_books')
 def books():
     if current_user.is_authenticated:
-        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.genre, Book.id_author, Author.name.label('author_name'), Editorial.name.label('editorial_name'))\
+        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .join(Author)\
             .join(Editorial)\
+            .join(Genre)\
             .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
             .order_by(Author.name.asc())
 
@@ -52,10 +53,11 @@ def books():
 def show_author(author_id):
     if current_user.is_authenticated:
         current_author = db.session.query(Author.name, Author.country).filter(Author.id == author_id)
-        author_books = db.session.query(Book.id, Book.title, Book.genre, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'))\
+        author_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .filter(Book.id_author == author_id)\
             .join(Author)\
-            .join(Editorial)
+            .join(Editorial)\
+            .join(Genre)
 
         return render_template('show_author.html',
                                greeting = current_user.name,
@@ -67,10 +69,11 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 def show_book(book_id):
     if current_user.is_authenticated:
-        current_book = db.session.query(Book.title, Book.genre, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'))\
+        current_book = db.session.query(Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .filter(Book.id == book_id)\
             .join(Author)\
-            .join(Editorial)
+            .join(Editorial)\
+            .join(Genre)
 
         return render_template('show_book.html',
                                greeting = current_user.name,
@@ -120,9 +123,20 @@ def add_book_post():
 
         id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
 
+        # Check genre existence
+        genre_name = request.form.get("genre_name")
+        genre_exists = Genre.query.filter_by(name=genre_name).first()
+
+        if not genre_exists:
+            genre = Genre(name=genre_name)
+            db.session.add(genre)
+            db.session.commit()
+            id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+
+        id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+
         # Add Book
         book_title = request.form.get('book_title')
-        book_genre = request.form.get('book_genre')
         book_year = request.form.get('book_year')
         book_pages = request.form.get('book_pages')
         book_rating = request.form.get('book_rating')
@@ -138,7 +152,6 @@ def add_book_post():
             is_shared = False
 
         book = Book(title = book_title,
-                    genre = book_genre,
                     year = book_year,
                     pages = book_pages,
                     read = is_read,
@@ -147,6 +160,7 @@ def add_book_post():
                     id_user = current_user.id,
                     id_author = id_author,
                     id_editorial = id_editorial,
+                    id_genre = id_genre,
                     )
         db.session.add(book)
         db.session.commit()
