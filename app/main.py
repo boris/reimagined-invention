@@ -53,7 +53,7 @@ def books():
 def show_author(author_id):
     if current_user.is_authenticated:
         current_author = db.session.query(Author.name, Author.country).filter(Author.id == author_id)
-        author_books = db.session.query(Book.id, Book.title, Book.genre, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        author_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .filter(Book.id_author == author_id)\
             .join(Author)\
             .join(Editorial)\
@@ -69,7 +69,7 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 def show_book(book_id):
     if current_user.is_authenticated:
-        current_book = db.session.query(Book.title, Book.genre, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        current_book = db.session.query(Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .filter(Book.id == book_id)\
             .join(Author)\
             .join(Editorial)\
@@ -137,7 +137,6 @@ def add_book_post():
 
         # Add Book
         book_title = request.form.get('book_title')
-        book_genre = request.form.get('book_genre')
         book_year = request.form.get('book_year')
         book_pages = request.form.get('book_pages')
         book_rating = request.form.get('book_rating')
@@ -153,7 +152,6 @@ def add_book_post():
             is_shared = False
 
         book = Book(title = book_title,
-                    genre = book_genre,
                     year = book_year,
                     pages = book_pages,
                     read = is_read,
@@ -162,6 +160,7 @@ def add_book_post():
                     id_user = current_user.id,
                     id_author = id_author,
                     id_editorial = id_editorial,
+                    id_genre = id_genre,
                     )
         db.session.add(book)
         db.session.commit()
