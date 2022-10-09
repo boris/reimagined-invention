@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-body">
+    <div class="container has-text-justified is-fluid">
+        {% for g in genre %}
+        <h1 class="Title">{{ g.name }}</h1>
+        {% endfor %}
+        <br>
+        <table class="table is-fullwidth">
+            <tr class="has-background-success-light">
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Puntuación</th>
+                <th>Editorial</th>
+            </tr>
+            {% for book in books %}
+            <tr>
+                <th><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></th>
+                <th><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{book.author_name}}</a></th>
+                <th>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe }}</th>
+                <th>{{ book.editorial_name }}</th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
