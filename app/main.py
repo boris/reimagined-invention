@@ -104,7 +104,7 @@ def add_book_post():
 @main.route('/my_books')
 def books():
     if current_user.is_authenticated:
-        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Book.id_genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .join(Author)\
             .join(Editorial)\
             .join(Genre)\
@@ -174,6 +174,25 @@ def show_book(book_id):
     else:
         return redirect(url_for('main.login'))
 
+
+@main.route('/show_genre/<int:genre_id>')
+def show_genre(genre_id):
+    if current_user.is_authenticated:
+        current_genre = db.session.query(Genre.name).filter(Genre.id == genre_id)
+        genre_books = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Editorial.name.label('editorial_name'), Author.name.label('author_name'))\
+            .filter(Book.id_genre == genre_id)\
+            .join(Author)\
+            .join(Editorial)\
+            .join(Genre)
+
+        return render_template('show_genre.html',
+                               greeting = current_user.name,
+                               genre = current_genre,
+                               books = genre_books,
+                               )
+
+    else:
+        return redirect(url_for('main.login'))
 
 @main.route('/test_utf8/')
 def test_utf8():
