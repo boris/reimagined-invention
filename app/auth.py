@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, login_required
 
 from .models import User
 from . import db
+from .forms import SignupForm
 
 auth = Blueprint('auth', __name__)
 
@@ -32,30 +33,34 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-@auth.route('/signup', methods = ["POST"])
-def signup_post():
-    name = request.form.get('name')
-    email = request.form.get('email')
-    password_hash = request.form.get('password')
+#@auth.route('/signup', methods = ["GET", "POST"])
+#def signup_post():
+#    name = request.form.get('name')
+#    email = request.form.get('email')
+#    password_hash = request.form.get('password')
+#
+#    user = User.query.filter_by(email=email).first()
+#    if user:
+#        flask('El email ya está registrado')
+#        return redirect(url_for('auth.signup'))
+#
+#    # create the new user with the form data
+#    new_user = User(name=name,
+#                    email=email,
+#                    password_hash=generate_password_hash(password_hash, method='sha256'),
+#                    )
+#
+#    # add the new user to the db
+#    db.session.add(new_user)
+#    db.session.commit()
+#
+#    return redirect(url_for('auth.login'))
 
-    user = User.query.filter_by(email=email).first()
-    if user:
-        flask('El email ya está registrado')
-        return redirect(url_for('auth.signup'))
 
-    # create the new user with the form data
-    new_user = User(name=name,
-                    email=email,
-                    password_hash=generate_password_hash(password_hash, method='sha256'),
-                    )
-
-    # add the new user to the db
-    db.session.add(new_user)
-    db.session.commit()
-
-    return redirect(url_for('auth.login'))
-
-
-@auth.route('/signup')
+@auth.route('/signup', methods = ["GET", "POST"])
 def signup():
-    return render_template('signup.html')
+    form = SignupForm()
+    if form.validate_on_submit():
+        return redirect(url_for('auth.login'))
+
+    return render_template('signup.html', form=form)
