@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .models import User, Book, Author, Editorial, Genre
 from . import db
+from .forms import AddBookForm
 
 main = Blueprint('main', __name__)
 
@@ -15,8 +16,11 @@ def index():
 @main.route('/add_book')
 def add_book():
     if current_user.is_authenticated:
+        # Call the class to add book. Not in use for now.
+        form = AddBookForm()
         return render_template('add_book.html',
                                greeting = current_user.name,
+                               form = form,
                                )
     else:
         return redirect(url_for('auth.login'))
@@ -199,3 +203,5 @@ def test_utf8():
     editorial_list = db.session.query(Editorial.name).filter(Editorial.id == 10).first()
 
     return str(editorial_list)
+
+
