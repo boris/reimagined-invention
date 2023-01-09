@@ -33,34 +33,27 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-#@auth.route('/signup', methods = ["GET", "POST"])
-#def signup_post():
-#    name = request.form.get('name')
-#    email = request.form.get('email')
-#    password_hash = request.form.get('password')
-#
-#    user = User.query.filter_by(email=email).first()
-#    if user:
-#        flask('El email ya está registrado')
-#        return redirect(url_for('auth.signup'))
-#
-#    # create the new user with the form data
-#    new_user = User(name=name,
-#                    email=email,
-#                    password_hash=generate_password_hash(password_hash, method='sha256'),
-#                    )
-#
-#    # add the new user to the db
-#    db.session.add(new_user)
-#    db.session.commit()
-#
-#    return redirect(url_for('auth.login'))
-
-
-@auth.route('/signup', methods = ["GET", "POST"])
+@auth.route('/signup', methods = ['GET', 'POST'])
 def signup():
     form = SignupForm()
-    if form.validate_on_submit():
+    if form.is_submitted():
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('El email ya está registrado')
+            return redirect(url_for('auth.signup'))
+
+        new_user = User(name=name,
+                        email=email,
+                        password_hash=generate_password_hash(password, method='sha256'),
+                        )
+
+        db.session.add(new_user)
+        db.session.commit()
+
         return redirect(url_for('auth.login'))
 
     return render_template('signup.html', form=form)
