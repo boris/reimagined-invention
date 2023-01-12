@@ -18,6 +18,12 @@ class AddBookForm(FlaskForm):
                               validators=[InputRequired()])
     book_rating = IntegerField('Puntuación', validators=[NumberRange(min=1, max=5)])
     book_tags = StringField('Tags')
+    submit = SubmitField('Agregar')
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', [DataRequired()])
+    password = PasswordField('Password', [DataRequired()])
 
 
 class SignupForm(FlaskForm):
