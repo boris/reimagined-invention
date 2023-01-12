@@ -4,27 +4,27 @@ from flask_login import login_user, logout_user, login_required
 
 from .models import User
 from . import db
-from .forms import SignupForm
+from .forms import LoginForm, SignupForm
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/login', methods = ['POST'])
-def login_post():
-    email = request.form.get('email')
-    password_hash = request.form.get('password')
-
-    user = User.query.filter_by(email=email).first()
-    if not user or not check_password_hash(user.password_hash, password_hash):
-        flash('Usuario o contraseña inválidos')
-        return redirect(url_for('auth.login'))
-
-    login_user(user)
-    return redirect(url_for('main.profile'))
-
-
-@auth.route('/login')
+@auth.route('/login', methods = ['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    form = LoginForm()
+    if form.is_submitted():
+        email = request.form['email']
+        password = request.form['password']
+
+        user = User.query.filter_by(email=email).first()
+
+        if not user or not check_password_hash(user.password_hash, password):
+            flash("Usuario o contraseña inválidos")
+            return redirect(url_for('auth.login'))
+
+        login_user(user)
+        return redirect(url_for('main.profile'))
+
+    return render_template('login.html', form=form)
 
 
 @auth.route('/logout')
