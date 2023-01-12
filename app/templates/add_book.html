@@ -5,21 +5,20 @@
     <div class="container has-test-justified">
         <div class="container">
             <h1 class="title is-1">Agregar nuevo libro</h1>
-
-        <form method="POST" action="/add_book" style="width: 50%">
-            <input class="input is-medium" type="text" name="book_title" placeholder="Título"><br></br>
-            <input class="input is-medium" type="text" name="author_name" placeholder="Autor"><br></br>
-            <input class="input is-medium" type="text" name="genre_name" placeholder="Género"><br></br>
-            <input class="input is-medium" type="text" name="author_country" placeholder="País"><br></br>
-            <input class="input is-medium" type="text" name="editorial_name" placeholder="Editorial"><br></br>
-            <input class="input is-medium" type="text" name="book_year" placeholder="Año"><br></br>
-            <input class="input is-medium" type="number" name="book_pages" placeholder="Número de páginas"><br></br>
-            <input class="input is-medium" type="text" name="book_is_read" placeholder="¿Leído? (Si/No)"><br></br>
-            <input class="input is-medium" type="text" name="book_is_shared" placeholder="¿Prestado? (Si/No)"><br></br>
-            <input class="input is-medium" type="number" name="book_rating" placeholder="Puntuación"><br></br>
-            <input class="input is-medium" type="text" name="tags" placeholder="Tags (separadas por coma)"><br></br>
-            <br></br>
-            <button class="button is-block is-info is-medium">Agregar</button>
+        <form method="POST" action="/add_book">
+            <p>{{ form.book_title.label }} {{ form.book_title(size=30) }}</p>
+            <p>{{ form.book_genre.label }} {{ form.book_genre(size=30) }}</p>
+            <p>{{ form.author_name.label }} {{ form.author_name(size=30) }}</p>
+            <p>{{ form.author_country.label }} {{ form.author_country(size=30) }}</p>
+            <p>{{ form.editorial_name.label }} {{ form.editorial_name(size=30) }}</p>
+            <p>{{ form.book_year.label }} {{ form.book_year(size=4) }}</p>
+            <p>{{ form.book_pages.label }} {{ form.book_pages(size=4) }}</p>
+            <p>{{ form.book_is_read.label }} {{ form.book_is_read }}</p>
+            <p>{{ form.book_is_shared.label }} {{ form.book_is_shared }}</p>
+            <p>{{ form.book_rating.label }} {{ form.book_rating(size=4) }}</p>
+            <p>{{ form.book_tags.label }} {{ form.book_tags(size=30) }}</p>
+            <br>
+            <p><input type="submit" value="Agregar"></p>
         </form>
         </div>
     </div>
