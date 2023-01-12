@@ -16,7 +16,7 @@ class AddBookForm(FlaskForm):
     book_is_shared = RadioField('¿Prestado?',
                               choices=['Si', 'No'],
                               validators=[InputRequired()])
-    book_rating = IntegerField('Puntuación', validators=[NumberRange(min=1, max=5)])
+    book_rating = IntegerField('Puntuación', validators=[NumberRange(min=0, max=5)])
     book_tags = StringField('Tags')
     submit = SubmitField('Agregar')
 
