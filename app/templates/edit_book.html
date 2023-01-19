@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br></br>
+<hr>
+<div class="body">
+    <div class="container has-test-justified">
+        <div class="container">
+            {% for b in current_book %}
+            <h1 class="title is-1">Editar libro: {{b.title}}</h1>
+            <form method="POST" action="{{url_for('main.edit_book', book_id=book_id)}}">
+                <p>{{ form.book_title.label }} {{ form.book_title(size=30, value=b.title) }} </p>
+                <p>{{ form.book_genre.label }} {{ form.book_genre(size=30, value=b.genre_name) }}</p>
+                <p>{{ form.author_name.label }} {{ form.author_name(size=30, value=b.author_name) }}</p>
+                <p>{{ form.author_country.label }} {{ form.author_country(size=30, value=b.author_country) }}</p>
+                <p>{{ form.editorial_name.label }} {{ form.editorial_name(size=30, value=b.editorial_name) }}</p>
+                <p>{{ form.book_year.label }} {{ form.book_year(size=4, value=b.year) }}</p>
+                <p>{{ form.book_pages.label }} {{ form.book_pages(size=4, value=b.pages) }}</p>
+                <p>{{ form.book_is_read.label }} {{ form.book_is_read }}</p>
+                <p>{{ form.book_is_shared.label }} {{ form.book_is_shared }}</p>
+                <p>{{ form.book_rating.label }} {{ form.book_rating(size=4, value=b.rating) }}</p>
+                <p>{{ form.book_tags.label }} {{ form.book_tags(size=30, value=b.tags) }}</p>
+                <br>
+                <p><input type="submit" value="Editar"></p>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
