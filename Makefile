@@ -1,12 +1,31 @@
-default: help
-
 include .env_vars
 export $(shell sed 's/=.*//' .env_vars)
 
-.PHONY: db-migrate db-upgrade help run run-db tunnel
+.PHONY: db-init db-load db-migrate db-up db-upgrade help run run-db tunnel
+.DEFAULT_GOAL := help
+
+db-init: ## Init the DB for SQLAlchemy
+	flask --app app --debug db init
+
+db-help: ## Shows help for DB commands
+	@echo "Run DB commads in the following order:"
+	@echo
+	@echo "db-up (if needed)"
+	@echo "db-init (if needed)"
+	@echo "db-migrate"
+	@echo "db-upgrade"
+	@echo "db-load"
+	@echo
+	@echo "See help <db-command> for help."
+
+db-load: ## Dumps a sample dataset into the DB
+	mysql -h 127.0.0.1 -u root -p reimagined_invention < reimagined_invention.sql
 
 db-migrate: ## Creates a migration file for the DB schema
 	flask --app app --debug db migrate
+
+db-up: ## Starts the DB engine using docker
+	docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=supersecret -d mysql:5.7
 
 db-upgrade: ## Applies the migration plan
 	flask --app app --debug db upgrade
