@@ -2,6 +2,7 @@ include .env_vars
 export $(shell sed 's/=.*//' .env_vars)
 
 .PHONY: db-init db-load db-migrate db-up db-upgrade help run run-db tunnel
+
 .DEFAULT_GOAL := help
 
 db-init: ## Init the DB for SQLAlchemy
@@ -33,7 +34,7 @@ db-upgrade: ## Applies the migration plan
 help: ## Show this help
 	@echo "If in doubt, start with make run"
 	@echo
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo
 
 run: ## Run the Flask app in local (debug) mode
@@ -44,3 +45,6 @@ run-db: ## Start the DB service in docker
 
 tunnel: ## Exposes the local environment on test.lenore.me. This requires a `make run` first.
 	docker run cloudflare/cloudflared:latest tunnel --no-autoupdate --metrics 0.0.0.0:60123 run --token $(CF_TOKEN)
+
+test:
+	echo $(MAKEFILE_LIST)
