@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .models import User, Book, Author, Editorial, Genre
 from . import db
-from .forms import BookForm, EditBookForm
+from .forms import BookForm
 
 main = Blueprint('main', __name__)
 
