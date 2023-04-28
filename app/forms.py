@@ -2,7 +2,10 @@ from flask_wtf import FlaskForm
 from wtforms import (StringField, IntegerField, RadioField, PasswordField, SubmitField)
 from wtforms.validators import InputRequired, NumberRange, DataRequired, EqualTo
 
-class AddBookForm(FlaskForm):
+from .models import Book, Author, Editorial, Genre
+from . import db
+
+class BookForm(FlaskForm):
     book_title = StringField('Título', validators=[InputRequired()])
     author_name = StringField('Autor', validators=[InputRequired()])
     author_country = StringField('País')

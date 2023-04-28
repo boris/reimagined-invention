@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .models import User, Book, Author, Editorial, Genre
 from . import db
-from .forms import AddBookForm
+from .forms import BookForm, EditBookForm
 
 main = Blueprint('main', __name__)
 
@@ -16,7 +16,7 @@ def index():
 @main.route('/add_book', methods = ['GET', 'POST'])
 def add_book():
     if current_user.is_authenticated:
-        form = AddBookForm()
+        form = BookForm()
 
         if form.is_submitted():
             # Check author details and existence
@@ -99,6 +99,116 @@ def add_book():
         return redirect(url_for('auth.login'))
 
 
+@main.route('/delete_book/<int:book_id>', methods = ['GET', 'POST'])
+def delete_book(book_id):
+    if current_user.is_authenticated:
+        db.session.query(Book).filter(Book.id == book_id).delete()
+        db.session.commit()
+
+        return redirect(url_for('main.books'))
+
+    else:
+        return redirect(url_for('auth.login'))
+
+
+@main.route('/edit_book/<int:book_id>', methods = ['GET', 'POST'])
+def edit_book(book_id):
+    if current_user.is_authenticated:
+        book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+            .filter(Book.id == book_id)\
+            .join(Author)\
+            .join(Editorial)\
+            .join(Genre)
+
+        author = db.session.query(Author.name, Author.country).filter(Author.id == Book.id_author)
+        editorial = db.session.query(Editorial.name).filter(Editorial.id == Book.id_editorial)
+        genre = db.session.query(Genre.name).filter(Genre.id == Book.id_genre)
+
+        #book = Book.query.get(book_id)
+        #author = Author.query.get(book.id_author)
+        #editorial = Editorial.query.get(book.id_editorial)
+        #genre = Genre.query.get().filter(genre_id == book.id_genre)
+
+        form = BookForm(obj=book)
+
+        if form.validate_on_submit():
+            # From here up to "END", everything can be optimized in different private methods
+            if request.form['book_is_read'].lower() == 'si':
+                is_read = True
+            else:
+                is_read = False
+
+            if request.form['book_is_shared'].lower() == 'si':
+                is_shared = True
+            else:
+                is_shared = False
+
+            # Check if Author exists
+            author_name = request.form['author_name']
+            author_country = request.form['author_country']
+
+            author_exists = Author.query.filter_by(name=author_name).first()
+
+            if not author_exists:
+                author = Author(country=author_country, name=author_name)
+                db.session.add(author)
+                db.session.commit()
+                id_author = db.session.query(Author.id).filter(Author.name == author_name)
+
+            id_author = db.session.query(Author.id).filter(Author.name == author_name)
+
+            # Check editorial details and existence
+            editorial_name = request.form['editorial_name']
+            editorial_exists = Editorial.query.filter_by(name=editorial_name).first()
+
+            if not editorial_exists:
+                editorial = Editorial(name=editorial_name)
+                db.session.add(editorial)
+                db.session.commit()
+                id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
+
+            id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
+
+            # Check genre existence
+            genre_name = request.form['book_genre']
+            genre_exists = Genre.query.filter_by(name=genre_name).first()
+
+            if not genre_exists:
+                genre = Genre(name=genre_name)
+                db.session.add(genre)
+                db.session.commit()
+                id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+
+            id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+            # End of existance checks
+
+            book.title = form.book_title.data
+            book.year = form.book_year.data
+            book.pages = form.book_pages.data
+            book.read = form.book_is_read.data
+            book.shared = form.book_is_shared.data
+            book.id_user = current_user.id
+
+            author.name = form.author_name.data
+            editorial.name = form.editorial_name.data
+            genre.name = form.genre_name.data
+
+            db.session.commit()
+
+
+            return redirect(url_for('main.profile'))
+
+
+        return render_template('edit_book.html',
+                               book_id = book_id,
+                               greeting = current_user.name,
+                               book = book,
+                               form = form,
+                               )
+    else:
+        return redirect(url_for('auth.login'))
+
+
 @main.route('/my_books')
 def books():
     if current_user.is_authenticated:
@@ -158,7 +268,7 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 def show_book(book_id):
     if current_user.is_authenticated:
-        current_book = db.session.query(Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .filter(Book.id == book_id)\
             .join(Author)\
             .join(Editorial)\
@@ -192,10 +302,11 @@ def show_genre(genre_id):
     else:
         return redirect(url_for('main.login'))
 
-@main.route('/test_utf8/')
-def test_utf8():
-    editorial_list = db.session.query(Editorial.name).filter(Editorial.id == 10).first()
+@main.route('/test_utf8/<int:editorial_id>')
+def test_utf8(editorial_id):
+    editorial_name = Editorial.query.get(editorial_id)
+    print(editorial_name)
 
-    return str(editorial_list)
+    return str(editorial_name.name)
 
 

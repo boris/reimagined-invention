@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="body">
+    <div class="container has-test-justified">
+        <div class="container">
+            debug: {{book}}
+            <h1 class="title is-1">Editar libro</h1>
+        {% for b in book %}
+        <form method="POST" action="/edit_book">
+            {{b.title}}
+            {{b.genre_name}}
+            {{b.author_name}}
+            {{b.author_country}}
+        </form>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

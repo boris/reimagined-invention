@@ -4,19 +4,30 @@
 
 <div class="body">
     {% for item in book %}
+
     <div class="container has-text-justified">
-        <h1 class="title">{{ item[0] }}</h1>
-        <h2 class="text-muted">{{ item[6] }} ({{ item[7] }})</h2>
+        <h1 class="title">{{ item[1] }}</h1>
+        <h2 class="text-muted">{{ item[7] }} ({{ item[8] }})</h2>
         <br></br>
-        <p><b>Género: </b>{{ item[9] }}</p>
-        <p><b>Editorial: </b>{{ item[7] }}</p>
-        <p><b>Año: </b>{{ item[1] }}</p>
-        <p><b>¿Leído?: </b>{% if item[3] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
-        <p><b>¿Prestado?: </b>{% if item[4] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
-        <p><b>Número de páginas: </b>{{ item[2] }}</p>
-        <p><b>Puntuación: </b>{{ item[5] * '<i class="bi bi-star-fill"></i>' |safe}}</p>
+        <p><b>Género: </b>{{ item[10] }}</p>
+        <p><b>Editorial: </b>{{ item[8] }}</p>
+        <p><b>Año: </b>{{ item[2] }}</p>
+        <p><b>¿Leído?: </b>{% if item[4] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
+        <p><b>¿Prestado?: </b>{% if item[5] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
+        <p><b>Número de páginas: </b>{{ item[3] }}</p>
+        <p><b>Puntuación: </b>{{ item[6] * '<i class="bi bi-star-fill"></i>' |safe}}</p>
+        <br></br>
+    </div>
+
+    <hr>
+
+    <div class="container has-text-justified">
+        <h4 class="text-muted">Footer Menu:</h3>
+        <ul>
+            <li><a href="{{ url_for('main.edit_book', book_id = item[0]) }}">Editar Libro</a></li>
+            <li><a href="{{ url_for('main.delete_book', book_id = item[0]) }}">Borrar Libro</a></li>
+        </ul>
     </div>
     {% endfor %}
-
 </div>
 {% endblock %}
