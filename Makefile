@@ -45,6 +45,3 @@ run-db: ## Start the DB service in docker
 
 tunnel: ## Exposes the local environment on test.lenore.me. This requires a `make run` first.
 	docker run cloudflare/cloudflared:latest tunnel --no-autoupdate --metrics 0.0.0.0:60123 run --token $(CF_TOKEN)
-
-test:
-	echo $(MAKEFILE_LIST)
