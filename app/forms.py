@@ -2,26 +2,10 @@ from flask_wtf import FlaskForm
 from wtforms import (StringField, IntegerField, RadioField, PasswordField, SubmitField)
 from wtforms.validators import InputRequired, NumberRange, DataRequired, EqualTo
 
-class AddBookForm(FlaskForm):
-    book_title = StringField('Título', validators=[InputRequired()])
-    author_name = StringField('Autor', validators=[InputRequired()])
-    author_country = StringField('País')
-    editorial_name = StringField('Editorial')
-    book_genre = StringField('Género')
-    book_year = IntegerField('Año')
-    book_pages = IntegerField('Número de páginas')
-    book_is_read = RadioField('¿Leído?',
-                              choices=['Si', 'No'],
-                              validators=[InputRequired()])
-    book_is_shared = RadioField('¿Prestado?',
-                              choices=['Si', 'No'],
-                              validators=[InputRequired()])
-    book_rating = IntegerField('Puntuación', validators=[NumberRange(min=0, max=5)])
-    book_tags = StringField('Tags')
-    submit = SubmitField('Agregar')
+from .models import Book, Author, Editorial, Genre
+from . import db
 
-
-class EditBookForm(FlaskForm):
+class BookForm(FlaskForm):
     book_title = StringField('Título', validators=[InputRequired()])
     author_name = StringField('Autor', validators=[InputRequired()])
     author_country = StringField('País')
