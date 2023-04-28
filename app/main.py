@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .models import User, Book, Author, Editorial, Genre
 from . import db
-from .forms import AddBookForm, EditBookForm
+from .forms import BookForm, EditBookForm
 
 main = Blueprint('main', __name__)
 
@@ -16,7 +16,7 @@ def index():
 @main.route('/add_book', methods = ['GET', 'POST'])
 def add_book():
     if current_user.is_authenticated:
-        form = AddBookForm()
+        form = BookForm()
 
         if form.is_submitted():
             # Check author details and existence
@@ -99,20 +99,51 @@ def add_book():
         return redirect(url_for('auth.login'))
 
 
+@main.route('/delete_book/<int:book_id>', methods = ['GET', 'POST'])
+def delete_book(book_id):
+    if current_user.is_authenticated:
+        db.session.query(Book).filter(Book.id == book_id).delete()
+        db.session.commit()
+
+        return redirect(url_for('main.books'))
+
+    else:
+        return redirect(url_for('auth.login'))
+
+
 @main.route('/edit_book/<int:book_id>', methods = ['GET', 'POST'])
 def edit_book(book_id):
     if current_user.is_authenticated:
-        form = EditBookForm()
+        book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+            .filter(Book.id == book_id)\
+            .join(Author)\
+            .join(Editorial)\
+            .join(Genre)
 
-        if request.method == "GET":
-            form.current_book = db.session.query(Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
-                .filter(Book.id == book_id)\
-                .join(Author)\
-                .join(Editorial)\
-                .join(Genre)
+        author = db.session.query(Author.name, Author.country).filter(Author.id == Book.id_author)
+        editorial = db.session.query(Editorial.name).filter(Editorial.id == Book.id_editorial)
+        genre = db.session.query(Genre.name).filter(Genre.id == Book.id_genre)
 
-        if form.is_submitted():
-            # Check author details and existence
+        #book = Book.query.get(book_id)
+        #author = Author.query.get(book.id_author)
+        #editorial = Editorial.query.get(book.id_editorial)
+        #genre = Genre.query.get().filter(genre_id == book.id_genre)
+
+        form = BookForm(obj=book)
+
+        if form.validate_on_submit():
+            # From here up to "END", everything can be optimized in different private methods
+            if request.form['book_is_read'].lower() == 'si':
+                is_read = True
+            else:
+                is_read = False
+
+            if request.form['book_is_shared'].lower() == 'si':
+                is_shared = True
+            else:
+                is_shared = False
+
+            # Check if Author exists
             author_name = request.form['author_name']
             author_country = request.form['author_country']
 
@@ -149,49 +180,29 @@ def edit_book(book_id):
                 id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
 
             id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+            # End of existance checks
 
-            # Add Book
-            book_title = request.form['book_title']
-            book_year = request.form['book_year']
-            book_pages = request.form['book_pages']
-            book_rating = request.form['book_rating']
+            book.title = form.book_title.data
+            book.year = form.book_year.data
+            book.pages = form.book_pages.data
+            book.read = form.book_is_read.data
+            book.shared = form.book_is_shared.data
+            book.id_user = current_user.id
 
-            if request.form['book_is_read'].lower() == 'si':
-                is_read = True
-            else:
-                is_read = False
+            author.name = form.author_name.data
+            editorial.name = form.editorial_name.data
+            genre.name = form.genre_name.data
 
-            if request.form['book_is_shared'].lower() == 'si':
-                is_shared = True
-            else:
-                is_shared = False
-
-            book = Book(title = book_title,
-                        year = book_year,
-                        pages = book_pages,
-                        read = is_read,
-                        shared = is_shared,
-                        rating = book_rating,
-                        id_user = current_user.id,
-                        id_author = id_author,
-                        id_editorial = id_editorial,
-                        id_genre = id_genre,
-                        )
-
-            book_updated = db.session.query(Book.id).filter(Book.id == book_id)
-            author_updated = db.session.query(Author.id).filter(Author.id == id_author)
-            editorial_updated = db.session.query(Editoral.id).filter(Editoral.id == id_editorial)
-            genre_updated = db.session.query_property(Genre.id).filter(Genre.id == id_genre)
-
-            db.session.update(book_updated)
             db.session.commit()
 
-            return redirect(url_for('main.show_book', book_id = book.id))
+
+            return redirect(url_for('main.profile'))
+
 
         return render_template('edit_book.html',
                                book_id = book_id,
                                greeting = current_user.name,
-                               current_book = form.current_book,
+                               book = book,
                                form = form,
                                )
     else:
@@ -257,7 +268,7 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 def show_book(book_id):
     if current_user.is_authenticated:
-        current_book = db.session.query(Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
             .filter(Book.id == book_id)\
             .join(Author)\
             .join(Editorial)\
@@ -291,10 +302,11 @@ def show_genre(genre_id):
     else:
         return redirect(url_for('main.login'))
 
-@main.route('/test_utf8/')
-def test_utf8():
-    editorial_list = db.session.query(Editorial.name).filter(Editorial.id == 10).first()
+@main.route('/test_utf8/<int:editorial_id>')
+def test_utf8(editorial_id):
+    editorial_name = Editorial.query.get(editorial_id)
+    print(editorial_name)
 
-    return str(editorial_list)
+    return str(editorial_name.name)
 
 
