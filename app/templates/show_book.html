@@ -21,13 +21,12 @@
 
     <hr>
 
-    <div class="container has-text-justified">
-        <h4 class="text-muted">Footer Menu:</h3>
-        <ul>
-            <li><a href="{{ url_for('main.edit_book', book_id = item[0]) }}">Editar Libro</a></li>
-            <li><a href="{{ url_for('main.delete_book', book_id = item[0]) }}">Borrar Libro</a></li>
-        </ul>
-    </div>
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="text-nowrap">
+            <a href="{{ url_for('main.edit_book', book_id = item[0]) }}">Editar Libro</a>
+            <a href="{{ url_for('main.delete_book', book_id = item[0]) }}">Borrar Libro</a>
+        </div>
+    </nav>
     {% endfor %}
 </div>
 {% endblock %}
