@@ -302,11 +302,15 @@ def show_genre(genre_id):
     else:
         return redirect(url_for('main.login'))
 
-@main.route('/test_utf8/<int:editorial_id>')
-def test_utf8(editorial_id):
-    editorial_name = Editorial.query.get(editorial_id)
-    print(editorial_name)
+@main.route('/test/<int:book_id>')
+def test(book_id):
+    book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        .filter(Book.id == book_id)\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
 
-    return str(editorial_name.name)
-
-
+    return render_template('test.html',
+                           greeting = current_user.name,
+                           book = book,
+                           )
