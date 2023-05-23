@@ -2,6 +2,8 @@
 
 {% block content %}
 
-{{ book.book_tittle }}
+{% for b in book %}
+{{ b.title }}
+{% endfor %}
 
 {% endblock %}
