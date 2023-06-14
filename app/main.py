@@ -133,116 +133,91 @@ def edit_book(book_id):
 
 
 @main.route('/my_books')
+@login_required
 def books():
-    if current_user.is_authenticated:
-        filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Book.id_genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
-            .join(Author)\
-            .join(Editorial)\
-            .join(Genre)\
-            .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
-            .order_by(Author.name.asc())
+    filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Book.id_genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)\
+        .filter((Book.id_author == Author.id) & (Book.id_editorial == Editorial.id) & (Book.id_user == current_user.id))\
+        .order_by(Author.name.asc())
 
-        return render_template('my_books.html',
+    return render_template('my_books.html',
                            greeting = current_user.name,
                            books = filtered_books,
                            )
-    else:
-        # Fix this route!!
-        return redirect(url_for('main.login'))
 
 
 @main.route('/profile')
+@login_required
 def profile():
-    if current_user.is_authenticated:
-        books_total = db.session.query(Book.id).filter(Book.id_user == current_user.id).count()
-        books_read = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == True)).count()
-        books_unread = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == False)).count()
-        books_shared = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.shared == True)).count()
+    books_total = db.session.query(Book.id).filter(Book.id_user == current_user.id).count()
+    books_read = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == True)).count()
+    books_unread = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == False)).count()
+    books_shared = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.shared == True)).count()
 
-        return render_template('profile.html',
-                               name = current_user.name,
-                               greeting = current_user.name,
-                               books_total = books_total,
-                               books_read = books_read,
-                               books_unread = books_unread,
-                               books_shared = books_shared,
-                               )
-    else:
-        return redirect(url_for('auth.login'))
+    return render_template('profile.html',
+                           name = current_user.name,
+                           greeting = current_user.name,
+                           books_total = books_total,
+                           books_read = books_read,
+                           books_unread = books_unread,
+                           books_shared = books_shared,
+                           )
 
 
 @main.route('/show_author/<int:author_id>')
+@login_required
 def show_author(author_id):
-    if current_user.is_authenticated:
-        current_author = db.session.query(Author.name, Author.country).filter(Author.id == author_id)
-        author_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
-            .filter(Book.id_author == author_id)\
-            .join(Author)\
-            .join(Editorial)\
-            .join(Genre)
+    current_author = db.session.query(Author.name, Author.country).filter(Author.id == author_id)
+    author_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        .filter(Book.id_author == author_id)\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
 
-        return render_template('show_author.html',
-                               greeting = current_user.name,
-                               author = current_author,
-                               books = author_books,
-                               )
+    return render_template('show_author.html',
+                           greeting = current_user.name,
+                           author = current_author,
+                           books = author_books,
+                           )
 
 
 @main.route('/show_book/<int:book_id>')
+@login_required
 def show_book(book_id):
-    if current_user.is_authenticated:
-        current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
-            .filter(Book.id == book_id)\
-            .join(Author)\
-            .join(Editorial)\
-            .join(Genre)
-
-        return render_template('show_book.html',
-                               greeting = current_user.name,
-                               book = current_book,
-                               )
-
-    else:
-        return redirect(url_for('main.login'))
-
-
-@main.route('/show_genre/<int:genre_id>')
-def show_genre(genre_id):
-    if current_user.is_authenticated:
-        current_genre = db.session.query(Genre.name).filter(Genre.id == genre_id)
-        genre_books = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Editorial.name.label('editorial_name'), Author.name.label('author_name'))\
-            .filter(Book.id_genre == genre_id)\
-            .join(Author)\
-            .join(Editorial)\
-            .join(Genre)
-
-        return render_template('show_genre.html',
-                               greeting = current_user.name,
-                               genre = current_genre,
-                               books = genre_books,
-                               )
-
-    else:
-        return redirect(url_for('main.login'))
-
-@main.route('/test/<int:book_id>', methods = ['GET', 'POST'])
-def test(book_id):
-    book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
         .filter(Book.id == book_id)\
         .join(Author)\
         .join(Editorial)\
         .join(Genre)
 
-    form = BookForm(obj=book)
-
-    if form.validate_on_submit():
-        form.populate_obj(book)
-        db.session.commit()
-
-        return redirect(url_for('main.profile'))
-
-    return render_template('edit_book.html',
+    return render_template('show_book.html',
                            greeting = current_user.name,
-                           book = book,
-                           form = form,
+                           book = current_book,
                            )
+
+
+@main.route('/show_genre/<int:genre_id>')
+@login_required
+def show_genre(genre_id):
+    current_genre = db.session.query(Genre.name).filter(Genre.id == genre_id)
+    genre_books = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Editorial.name.label('editorial_name'), Author.name.label('author_name'))\
+        .filter(Book.id_genre == genre_id)\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
+
+    return render_template('show_genre.html',
+                           greeting = current_user.name,
+                           genre = current_genre,
+                           books = genre_books,
+                           )
+
+
+@main.route('/test/<int:book_id>', methods = ['GET', 'POST'])
+@login_required
+def test(book_id):
+    book = db.session.query(Book.title).filter(Book.id == book_id)
+
+    return render_template('test.html', book=book)
