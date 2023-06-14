@@ -1,11 +1,11 @@
 import os
 import yaml
 from os import path
-from flask import Flask, redirect, url_for, render_template, request, abort
+from flask import Flask, redirect, url_for, render_template, request, abort, flash
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
 
 
 # Read config file
@@ -38,7 +38,7 @@ from .models import User, Book, Author, Editorial, Genre
 
 
 # Login manager
-login_manager = LoginManager()
+login_manager = LoginManager(app)
 login_user.login_view = 'auth.login'
 login_manager.init_app(app)
 
@@ -46,6 +46,12 @@ login_manager.init_app(app)
 def load_user(user_id):
     # since the user_id is just the primary key of our user table, use it in the query for the user
     return User.query.get(int(user_id))
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+    flash('You must be logged in to view this page.')
+    return redirect(url_for('auth.login'))
 
 
 # Blueprint import
