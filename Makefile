@@ -43,5 +43,6 @@ run: ## Run the Flask app in local (debug) mode
 run-db: ## Start the DB service in docker
 	docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD) -d mysql:5.7
 
-tunnel: ## Exposes the local environment on test.lenore.me. This requires a `make run` first.
+tunnel: ## Exposes the local environment on test.lenore.me. This will run `make run` in the background first.
+	$(MAKE) run &
 	docker run cloudflare/cloudflared:latest tunnel --no-autoupdate --metrics 0.0.0.0:60123 run --token $(CF_TOKEN)

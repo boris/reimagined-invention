@@ -6,6 +6,12 @@ from .models import Book, Author, Editorial, Genre
 from . import db
 
 class BookForm(FlaskForm):
+    def __init__(self, *args, author_id=None, editorial_id=None, genre_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.author_id = author_id
+        self.editorial_id = editorial_id
+        self.genre_id = genre_id
+
     book_title = StringField('Título', validators=[InputRequired()])
     author_name = StringField('Autor', validators=[InputRequired()])
     author_country = StringField('País')
@@ -22,6 +28,12 @@ class BookForm(FlaskForm):
     book_rating = IntegerField('Puntuación', validators=[NumberRange(min=0, max=5)])
     book_tags = StringField('Tags')
     submit = SubmitField('Agregar')
+
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        obj.author_id = self.author_id
+        obj.editorial_id = self.editorial_id
+        obj.genre_id = self.genre_id
 
 
 class LoginForm(FlaskForm):

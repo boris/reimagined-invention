@@ -5,16 +5,26 @@
 <div class="body">
     <div class="container has-test-justified">
         <div class="container">
-            debug: {{book}}
             <h1 class="title is-1">Editar libro</h1>
-        {% for b in book %}
-        <form method="POST" action="/edit_book">
-            {{b.title}}
-            {{b.genre_name}}
-            {{b.author_name}}
-            {{b.author_country}}
-        </form>
-        {% endfor %}
-    </div>
+            <form method="POST" action="{{ url_for('main.edit_book', book_id=book.id) }}">
+                {{ form.hidden_tag() }}
+                <br>
+                <p>{{ form.book_title.label }} {{ form.book_title(value=book.title) }}</p>
+                <p>{{ form.author_name.label  }} {{ form.author_name(value=book.author.name)  }}</p>
+                <input type="hidden" name="author_id" value="{{ book.id_author }}">
+                <p>{{ form.author_country.label }} {{ form.author_country(value=book.author.country) }}</p>
+                <p>{{ form.book_pages.label }} {{ form.book_pages(value=book.pages) }}</p>
+                <p>{{ form.editorial_name.label }} {{ form.editorial_name(value=book.editorial.name) }}</p>
+                <input type="hidden" name="editorial_id" value="{{ book.id_editorial }}">
+                <p>{{ form.book_year.label }} {{ form.book_year(value=book.year) }}</p>
+                <p>{{ form.book_genre.label }} {{ form.book_genre(value=book.genre.name) }}</p>
+                <input type="hidden" name="genre_id" value="{{ book.id_genre }}">
+                <p>{{ form.book_is_read.label }} {{ form.book_is_read(checked=book_is_read) }}</p>
+                <p>{{ form.book_is_shared.label }} {{ form.book_is_shared(checked=book_is_shared) }}</p>
+                <p>{{ form.book_rating.label }} {{ form.book_rating(value=book.rating) }}</p>
+                <p>{{ form.book_tags.label }} {{ form.book_tags(value=book.tags) }}</p>
+                {{ form.submit }}
+            </form>
+        </div>
 </div>
 {% endblock %}

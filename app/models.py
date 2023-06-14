@@ -20,6 +20,10 @@ class Book(db.Model):
     id_editorial = db.Column(db.Integer, db.ForeignKey('editorial.id'), nullable=False)
     id_genre = db.Column(db.Integer, db.ForeignKey('genre.id'), nullable=False)
 
+    author = db.relationship('Author', backref='books')
+    editorial = db.relationship('Editorial', backref='books')
+    genre = db.relationship('Genre', backref='books')
+
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
