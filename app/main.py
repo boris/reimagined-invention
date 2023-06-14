@@ -17,22 +17,22 @@ def index():
 
 
 @main.route('/add_book', methods = ['GET', 'POST'])
+@login_required
 def add_book():
-    if current_user.is_authenticated:
-        form = BookForm()
+    form = BookForm()
 
-        if form.is_submitted():
-            # Check author details and existence
-            author_name = request.form['author_name']
-            author_country = request.form['author_country']
+    if form.is_submitted():
+        # Check author details and existence
+        author_name = request.form['author_name']
+        author_country = request.form['author_country']
 
-            author_exists = Author.query.filter_by(name=author_name).first()
+        author_exists = Author.query.filter_by(name=author_name).first()
 
-            if not author_exists:
-                author = Author(country=author_country, name=author_name)
-                db.session.add(author)
-                db.session.commit()
-                id_author = db.session.query(Author.id).filter(Author.name == author_name)
+        if not author_exists:
+            author = Author(country=author_country, name=author_name)
+            db.session.add(author)
+            db.session.commit()
+            id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
             id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
@@ -98,20 +98,15 @@ def add_book():
                                greeting = current_user.name,
                                form = form,
                                )
-    else:
-        return redirect(url_for('auth.login'))
 
 
 @main.route('/delete_book/<int:book_id>', methods = ['GET', 'POST'])
+@login_required
 def delete_book(book_id):
-    if current_user.is_authenticated:
-        db.session.query(Book).filter(Book.id == book_id).delete()
-        db.session.commit()
+    db.session.query(Book).filter(Book.id == book_id).delete()
+    db.session.commit()
 
-        return redirect(url_for('main.books'))
-
-    else:
-        return redirect(url_for('auth.login'))
+    return redirect(url_for('main.books'))
 
 
 @main.route('/edit_book/<int:book_id>', methods = ['GET', 'POST'])
