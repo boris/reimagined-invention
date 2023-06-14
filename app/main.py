@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 # This is for debug
 import traceback
 
-from .models import User, Book, Author, Editorial, Genre
+from app.models import User, Book, Author, Editorial, Genre
 from . import db
 from .forms import BookForm
 
@@ -115,46 +115,26 @@ def delete_book(book_id):
 
 
 @main.route('/edit_book/<int:book_id>', methods = ['GET', 'POST'])
+@login_required
 def edit_book(book_id):
-    if current_user.is_authenticated:
-        book = db.session.query(Book).filter(Book.id == book_id).first()
-
-        form = BookForm(obj=book)
-
-        try:
-            print("About to try the validate_on_submit")
-            print(type(book))
-            if form.validate_on_submit():
-                id_author = book.id_author
-                id_editorial = book.id_editorial
-                id_genre = book.id_genre
-
-                book.title = form.book_title.data
-                book.id_author = id_author
-                book.id_editorial = id_editorial
-                book.id_genre = id_genre
-                book.year = form.book_year.data
-                book.pages = form.book_pages.data
-                book.read = True if form.book_is_read.data == 'si' else False
-                book.shared = True if form.book_is_shared.data == 'si' else False
-                book.rating = form.book_rating.data
-                book.tags = form.book_tags.data
-
-                db.session.commit()
-                print('Book updated successfully')
-                return redirect(url_for('main.show_book', book_id = book_id))
-
-        except Exception as e:
-            traceback.print_exc()
-
-        return render_template('edit_book.html',
-                               greeting = current_user.name,
-                               book = book,
-                               form = form,
-                               )
-
-    else:
-        return redirect(url_for('auth.login'))
+    book = Book.query.get_or_404(book_id)
+    form = BookForm(author_id=book.id_author, editorial_id=book.id_editorial, genre_id=book.id_genre)
+    if form.validate_on_submit():
+        book.title = form.book_title.data
+        book.author.name = form.author_name.data
+        book.author.country = form.author_country.data
+        book.pages = form.book_pages.data
+        book.editorial.name = form.editorial_name.data
+        book.year = form.book_year.data
+        book.genre.name = form.book_genre.data
+        book.read = form.book_is_read.data == 'Si'
+        book.shared = form.book_is_shared.data == 'Si'
+        book.rating = form.book_rating.data
+        book.tags = form.book_tags.data
+        db.session.commit()
+        flash('El libro se ha actualizado exitosamente.', 'success')
+        return redirect(url_for('main.show_book', book_id=book_id))
+    return render_template('edit_book.html', form=form, book_id=book_id, book=book)
 
 
 @main.route('/my_books')
