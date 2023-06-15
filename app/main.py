@@ -170,7 +170,7 @@ def profile():
 @login_required
 def show_author(author_id):
     current_author = db.session.query(Author.name, Author.country).filter(Author.id == author_id)
-    author_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+    author_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Book.id_editorial, Book.id_genre, Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
         .filter(Book.id_author == author_id)\
         .join(Author)\
         .join(Editorial)\
@@ -187,7 +187,7 @@ def show_author(author_id):
 @login_required
 def show_editorial(editorial_id):
     current_editorial = db.session.query(Editorial.name).filter(Editorial.id == editorial_id)
-    editorial_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Author.name.label('author_name'), Genre.name.label('genre_name'))\
+    editorial_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Book.id_author, Book.id_genre, Author.name.label('author_name'), Genre.name.label('genre_name'))\
         .filter(Book.id_editorial == editorial_id)\
         .join(Author)\
         .join(Editorial)\
@@ -219,7 +219,7 @@ def show_book(book_id):
 @login_required
 def show_genre(genre_id):
     current_genre = db.session.query(Genre.name).filter(Genre.id == genre_id)
-    genre_books = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Editorial.name.label('editorial_name'), Author.name.label('author_name'))\
+    genre_books = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Book.id_editorial, Editorial.name.label('editorial_name'), Author.name.label('author_name'))\
         .filter(Book.id_genre == genre_id)\
         .join(Author)\
         .join(Editorial)\
