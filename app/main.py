@@ -135,7 +135,7 @@ def edit_book(book_id):
 @main.route('/my_books')
 @login_required
 def books():
-    filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Book.id_genre, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+    filtered_books = db.session.query(Book.id, Book.title, Book.rating, Book.id_author, Book.id_genre, Book.id_editorial, Author.name.label('author_name'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
         .join(Author)\
         .join(Editorial)\
         .join(Genre)\
@@ -180,6 +180,23 @@ def show_author(author_id):
                            greeting = current_user.name,
                            author = current_author,
                            books = author_books,
+                           )
+
+
+@main.route('/show_editorial/<int:editorial_id>')
+@login_required
+def show_editorial(editorial_id):
+    current_editorial = db.session.query(Editorial.name).filter(Editorial.id == editorial_id)
+    editorial_books = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.rating, Author.name.label('author_name'), Genre.name.label('genre_name'))\
+        .filter(Book.id_editorial == editorial_id)\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
+
+    return render_template('show_editorial.html',
+                           greeting = current_user.name,
+                           editorial = current_editorial,
+                           books = editorial_books,
                            )
 
 
