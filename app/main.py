@@ -41,64 +41,64 @@ def add_book():
             editorial_name = request.form['editorial_name']
             editorial_exists = Editorial.query.filter_by(name=editorial_name).first()
 
-            if not editorial_exists:
-                editorial = Editorial(name=editorial_name)
-                db.session.add(editorial)
-                db.session.commit()
-                id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
-
+        if not editorial_exists:
+            editorial = Editorial(name=editorial_name)
+            db.session.add(editorial)
+            db.session.commit()
             id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
 
-            # Check genre existence
-            genre_name = request.form['book_genre']
-            genre_exists = Genre.query.filter_by(name=genre_name).first()
+        id_editorial = db.session.query(Editorial.id).filter(Editorial.name == editorial_name)
 
-            if not genre_exists:
-                genre = Genre(name=genre_name)
-                db.session.add(genre)
-                db.session.commit()
-                id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
+        # Check genre existence
+        genre_name = request.form['book_genre']
+        genre_exists = Genre.query.filter_by(name=genre_name).first()
 
+        if not genre_exists:
+            genre = Genre(name=genre_name)
+            db.session.add(genre)
+            db.session.commit()
             id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
 
-            # Add Book
-            book_title = request.form['book_title']
-            book_year = request.form['book_year']
-            book_pages = request.form['book_pages']
-            book_rating = request.form['book_rating']
+        id_genre = db.session.query(Genre.id).filter(Genre.name == genre_name)
 
-            if request.form['book_is_read'].lower() == 'si':
-                is_read = True
-            else:
-                is_read = False
+        # Add Book
+        book_title = request.form['book_title']
+        book_year = request.form['book_year']
+        book_pages = request.form['book_pages']
+        book_rating = request.form['book_rating']
 
-            if request.form['book_is_shared'].lower() == 'si':
-                is_shared = True
-            else:
-                is_shared = False
+        if request.form['book_is_read'].lower() == 'si':
+            is_read = True
+        else:
+            is_read = False
 
-            book = Book(title = book_title,
-                        year = book_year,
-                        pages = book_pages,
-                        read = is_read,
-                        shared = is_shared,
-                        rating = book_rating,
-                        id_user = current_user.id,
-                        id_author = id_author,
-                        id_editorial = id_editorial,
-                        id_genre = id_genre,
-                        )
-            db.session.add(book)
-            db.session.commit()
+        if request.form['book_is_shared'].lower() == 'si':
+            is_shared = True
+        else:
+            is_shared = False
+
+        book = Book(title = book_title,
+                    year = book_year,
+                    pages = book_pages,
+                    read = is_read,
+                    shared = is_shared,
+                    rating = book_rating,
+                    id_user = current_user.id,
+                    id_author = id_author,
+                    id_editorial = id_editorial,
+                    id_genre = id_genre,
+                    )
+        db.session.add(book)
+        db.session.commit()
 
 
-            # Later this should redirect to 'main.book/book_id' or something like that
-            return redirect(url_for('main.show_book', book_id = book.id))
+        # Later this should redirect to 'main.book/book_id' or something like that
+        return redirect(url_for('main.show_book', book_id = book.id))
 
-        return render_template('add_book.html',
-                               greeting = current_user.name,
-                               form = form,
-                               )
+    return render_template('add_book.html',
+                           greeting = current_user.name,
+                           form = form,
+                           )
 
 
 @main.route('/delete_book/<int:book_id>', methods = ['GET', 'POST'])
