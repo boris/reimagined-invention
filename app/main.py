@@ -1,3 +1,4 @@
+import random
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -151,12 +152,43 @@ def books():
 @main.route('/profile')
 @login_required
 def profile():
+    quotes = {
+        "Vladimir Nabokov": {
+            "Saber que tienes algo bueno para leer antes de irte a la cama es una de las sensaciones más agradables",
+            "La lectura es una de las formas de la felicidad y debería ser accesible para todos",
+        },
+        "Lloyd Alexander": {
+            "Sigue leyendo. Es una de las más maravillosas aventuras que cualquier persona puede tener"
+        },
+        "Benjamin Franklin": {
+            "La lectura es para la mente lo que el ejercicio para el cuerpo",
+            "La inversión en conocimiento paga el mejor interés"
+        },
+        "The black mamba": {
+            "Dedication sees dreams come true",
+            "May you always remember to enjoy the road, especially when it’s a hard one",
+        },
+        "Jorge Luis Borges": {
+            "Que otros se enorgullezcan por lo que han escrito, yo me enorgullezco por lo que he leído",
+            "La lectura es una conversación con los hombres más ilustres de los siglos pasados",
+        },
+        "Roberto Bolaño": {
+            "La lectura es una forma de soledad, de aislamiento, de ruptura de la vida inmediata, mientras que al mismo tiempo es una apertura a un mundo diferente y quizás mejor",
+            "La lectura es una amistad",
+        }
+    }
+
+    author = random.choice(list(quotes.keys()))
+    quote = random.choice(list(quotes[author]))
+
     books_total = db.session.query(Book.id).filter(Book.id_user == current_user.id).count()
     books_read = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == True)).count()
     books_unread = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == False)).count()
     books_shared = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.shared == True)).count()
 
     return render_template('profile.html',
+                           author = author,
+                           quote = quote,
                            name = current_user.name,
                            greeting = current_user.name,
                            books_total = books_total,
