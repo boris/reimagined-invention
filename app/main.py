@@ -35,11 +35,11 @@ def add_book():
             db.session.commit()
             id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
-            id_author = db.session.query(Author.id).filter(Author.name == author_name)
+        id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
-            # Check editorial details and existence
-            editorial_name = request.form['editorial_name']
-            editorial_exists = Editorial.query.filter_by(name=editorial_name).first()
+        # Check editorial details and existence
+        editorial_name = request.form['editorial_name']
+        editorial_exists = Editorial.query.filter_by(name=editorial_name).first()
 
         if not editorial_exists:
             editorial = Editorial(name=editorial_name)
@@ -212,6 +212,24 @@ def show_author(author_id):
                            greeting = current_user.name,
                            author = current_author,
                            books = author_books,
+                           )
+
+
+@main.route('/show_country/<string:author_country>')
+@login_required
+def show_country(author_country):
+    author_country = author_country.lower()
+    authors = db.session.query(Author.id, Author.name)\
+        .filter(Author.country == author_country)\
+        .filter(Book.id_author == Author.id)\
+        .filter(Book.id_user == current_user.id)\
+        .join(Book)\
+        .order_by(Author.name.asc())
+
+    return render_template('show_country.html',
+                           greeting = current_user.name,
+                           author_country = author_country,
+                           authors = authors,
                            )
 
 
