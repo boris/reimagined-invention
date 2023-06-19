@@ -6,28 +6,24 @@
         <h1 class="title">Mis Libros</h1>
         <br>
 
-        <div class="table-container">
-            <table class="table is-fullwidth">
-                <tbody>
-                    <tr class="has-background-success-light">
-                        <th>Título</th>
-                        <th>Autor</th>
-                        <th>Puntuación</th>
-                        <th>Género</th>
-                        <th>Editorial</th>
-                    </tr>
-                    {% for book in books|sort(attribute='title') %}
-                    <tr>
-                        <th><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></th>
-                        <th><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{ book.author_name }}</a></th>
-                        <th>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe }}</th>
-                        <th><a href="{{ url_for('main.show_genre', genre_id = book.id_genre) }}">{{ book.genre_name }}</a></th>
-                        <th><a href="{{ url_for('main.show_editorial', editorial_id = book.id_editorial ) }}">{{ book.editorial_name }}</a></th>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <table class="table is-fullwidth">
+            <tr class="has-background-success-light">
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Puntuación</th>
+                <th>Género</th>
+                <th>Editorial</th>
+            </tr>
+            {% for book in books|sort(attribute='title') %}
+            <tr>
+                <td><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></td>
+                <td><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{ book.author_name }}</a></td>
+                <td>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe }}</td>
+                <td><a href="{{ url_for('main.show_genre', genre_id = book.id_genre) }}">{{ book.genre_name }}</a></td>
+                <td><a href="{{ url_for('main.show_editorial', editorial_id = book.id_editorial ) }}">{{ book.editorial_name }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
 
     </div>
 </div>

@@ -16,10 +16,10 @@
             </tr>
             {% for book in books %}
             <tr>
-                <th><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></th>
-                <th><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{book.author_name}}</a></th>
-                <th>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe }}</th>
-                <th><a href="{{ url_for('main.show_editorial', editorial_id = book.id_editorial) }}">{{ book.editorial_name }}</a></th>
+                <td><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></td>
+                <td><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{book.author_name}}</a></td>
+                <td>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe }}</td>
+                <td><a href="{{ url_for('main.show_editorial', editorial_id = book.id_editorial) }}">{{ book.editorial_name }}</a></td>
             </tr>
             {% endfor %}
         </table>
