@@ -2,6 +2,7 @@ import random
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func, desc
 
 # This is for debug
 import traceback
@@ -35,11 +36,11 @@ def add_book():
             db.session.commit()
             id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
-            id_author = db.session.query(Author.id).filter(Author.name == author_name)
+        id_author = db.session.query(Author.id).filter(Author.name == author_name)
 
-            # Check editorial details and existence
-            editorial_name = request.form['editorial_name']
-            editorial_exists = Editorial.query.filter_by(name=editorial_name).first()
+        # Check editorial details and existence
+        editorial_name = request.form['editorial_name']
+        editorial_exists = Editorial.query.filter_by(name=editorial_name).first()
 
         if not editorial_exists:
             editorial = Editorial(name=editorial_name)
@@ -186,6 +187,16 @@ def profile():
     books_unread = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == False)).count()
     books_shared = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.shared == True)).count()
 
+    # Queries for data analysis
+    books_by_country_subquery = db.session.query(Book.id_author).filter(Book.id_user == current_user.id).subquery()
+    books_by_country_query = db.session.query(Author.country, func.count()).\
+                filter(Author.id.in_(books_by_country_subquery)).\
+                group_by(Author.country).\
+                order_by(func.count().desc()).\
+                limit(5)
+    books_by_country = [(row[0], row[1]) for row in books_by_country_query.all()]
+
+
     return render_template('profile.html',
                            author = author,
                            quote = quote,
@@ -195,6 +206,7 @@ def profile():
                            books_read = books_read,
                            books_unread = books_unread,
                            books_shared = books_shared,
+                           books_by_country = books_by_country,
                            )
 
 
@@ -212,6 +224,24 @@ def show_author(author_id):
                            greeting = current_user.name,
                            author = current_author,
                            books = author_books,
+                           )
+
+
+@main.route('/show_country/<string:author_country>')
+@login_required
+def show_country(author_country):
+    author_country = author_country.lower()
+    authors = db.session.query(Author.id, Author.name)\
+        .filter(Author.country == author_country)\
+        .filter(Book.id_author == Author.id)\
+        .filter(Book.id_user == current_user.id)\
+        .join(Book)\
+        .order_by(Author.name.asc())
+
+    return render_template('show_country.html',
+                           greeting = current_user.name,
+                           author_country = author_country,
+                           authors = authors,
                            )
 
 

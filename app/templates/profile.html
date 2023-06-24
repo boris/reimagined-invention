@@ -40,7 +40,23 @@
 
         <br>
 
-        <h2>Análisis de Datos</h2>
+        <h2>Análisis de Datos.</h2>
+
+        <h3>Cantidad de libros por país de author</h3>
+        <table class="table is-halfwidth is-stripped">
+            <tbody>
+                <tr class="has-background-success-light">
+                    <th>País</th>
+                    <th>Cantidad</th>
+                </tr>
+                {% for country, count in books_by_country|sort(attribute='count_1') %}
+                <tr>
+                    <td><a href="{{ url_for('main.show_country', author_country = country) }}">{{ country }}</a></td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 </div>

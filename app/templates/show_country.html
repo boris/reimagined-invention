@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-body">
+    <div class="container has-text-justified is-fluid">
+        <h1 class="Title">{{ author_country|upper }}</h1>
+        <br>
+        <table class="table is-fullwidth">
+            <tr class="has-background-success-light">
+                <th>Autores</th>
+            </tr>
+        {% for author in authors|sort(attribute='name') %}
+            <tr>
+                <td><a href="{{ url_for('main.show_author', author_id = author.id) }}">{{ author.name }}</a></td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
