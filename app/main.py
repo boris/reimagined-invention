@@ -2,6 +2,7 @@ import random
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func, desc
 
 # This is for debug
 import traceback
@@ -186,6 +187,16 @@ def profile():
     books_unread = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == False)).count()
     books_shared = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.shared == True)).count()
 
+    # Queries for data analysis
+    books_by_country_subquery = db.session.query(Book.id_author).filter(Book.id_user == current_user.id).subquery()
+    books_by_country_query = db.session.query(Author.country, func.count()).\
+                filter(Author.id.in_(books_by_country_subquery)).\
+                group_by(Author.country).\
+                order_by(func.count().desc()).\
+                limit(5)
+    books_by_country = [(row[0], row[1]) for row in books_by_country_query.all()]
+
+
     return render_template('profile.html',
                            author = author,
                            quote = quote,
@@ -195,6 +206,7 @@ def profile():
                            books_read = books_read,
                            books_unread = books_unread,
                            books_shared = books_shared,
+                           books_by_country = books_by_country,
                            )
 
 
