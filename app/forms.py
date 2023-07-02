@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import (StringField, IntegerField, RadioField, PasswordField, SubmitField)
+from wtforms import (StringField, IntegerField, RadioField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField)
 from wtforms.validators import InputRequired, NumberRange, DataRequired, EqualTo
 
 from .models import Book, Author, Editorial, Genre
@@ -26,6 +26,7 @@ class BookForm(FlaskForm):
                               choices=['Si', 'No'],
                               validators=[InputRequired()])
     book_rating = IntegerField('Puntuación', validators=[NumberRange(min=0, max=5)])
+    book_review = TextAreaField('Reseña')
     book_tags = StringField('Tags')
     submit = SubmitField('Agregar')
 
