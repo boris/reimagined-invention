@@ -67,6 +67,7 @@ def add_book():
         book_year = request.form['book_year']
         book_pages = request.form['book_pages']
         book_rating = request.form['book_rating']
+        book_review = request.form['book_review']
 
         if request.form['book_is_read'].lower() == 'si':
             is_read = True
@@ -84,6 +85,7 @@ def add_book():
                     read = is_read,
                     shared = is_shared,
                     rating = book_rating,
+                    review = book_review,
                     id_user = current_user.id,
                     id_author = id_author,
                     id_editorial = id_editorial,
@@ -127,11 +129,20 @@ def edit_book(book_id):
         book.read = form.book_is_read.data == 'Si'
         book.shared = form.book_is_shared.data == 'Si'
         book.rating = form.book_rating.data
+        book.review = form.book_review.data
         book.tags = form.book_tags.data
+
         db.session.commit()
         flash('El libro se ha actualizado exitosamente.', 'success')
+
         return redirect(url_for('main.show_book', book_id=book_id))
-    return render_template('edit_book.html', form=form, book_id=book_id, book=book)
+
+    return render_template('edit_book.html',
+                           form=form,
+                           book_id=book_id,
+                           book=book,
+                           greeting=current_user.name,
+                           )
 
 
 @main.route('/my_books')
@@ -172,10 +183,16 @@ def profile():
         "Jorge Luis Borges": {
             "Que otros se enorgullezcan por lo que han escrito, yo me enorgullezco por lo que he leído",
             "La lectura es una conversación con los hombres más ilustres de los siglos pasados",
+            "De los diversos instrumentos del hombre, el más asombroso es, sin duda, el libro. Los demás son extensiones de su cuerpo. El microscopio, el telescopio, son extensiones de su vista; el teléfono es extensión de la voz; luego tenemos el arado y la espada, extensiones del brazo. Pero el libro es otra cosa: el libro es una extensión de la memoria y la imaginación",
         },
         "Roberto Bolaño": {
             "La lectura es una forma de soledad, de aislamiento, de ruptura de la vida inmediata, mientras que al mismo tiempo es una apertura a un mundo diferente y quizás mejor",
             "La lectura es una amistad",
+        },
+        "Irene Vallejo": {
+            "Toda biblioteca es un viaje; todo libro un pasaporte sin caducidad",
+            "La lectura, como brújula, le abría los caminos de lo desconocido. En un mundo caótico, adquirir libros es un acto de equilibrio al filo del abismo",
+            "Reunir todos los libros existentes es otra forma - simbólica, mental, pacífica - de poseer el mundo",
         }
     }
 
@@ -227,6 +244,21 @@ def show_author(author_id):
                            )
 
 
+@main.route('/show_book/<int:book_id>')
+@login_required
+def show_book(book_id):
+    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+        .filter(Book.id == book_id)\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
+
+    return render_template('show_book.html',
+                           greeting = current_user.name,
+                           book = current_book,
+                           )
+
+
 @main.route('/show_country/<string:author_country>')
 @login_required
 def show_country(author_country):
@@ -259,21 +291,6 @@ def show_editorial(editorial_id):
                            greeting = current_user.name,
                            editorial = current_editorial,
                            books = editorial_books,
-                           )
-
-
-@main.route('/show_book/<int:book_id>')
-@login_required
-def show_book(book_id):
-    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
-        .filter(Book.id == book_id)\
-        .join(Author)\
-        .join(Editorial)\
-        .join(Genre)
-
-    return render_template('show_book.html',
-                           greeting = current_user.name,
-                           book = current_book,
                            )
 
 
