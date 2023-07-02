@@ -15,6 +15,7 @@ class Book(db.Model):
     read = db.Column(db.Boolean, default=False)
     shared = db.Column(db.Boolean, default=False)
     rating = db.Column(db.Integer)
+    review = db.Column(db.Text)
     id_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     id_author = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
     id_editorial = db.Column(db.Integer, db.ForeignKey('editorial.id'), nullable=False)
