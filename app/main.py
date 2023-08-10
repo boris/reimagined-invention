@@ -69,6 +69,7 @@ def add_book():
         book_rating = request.form['book_rating']
         book_review = request.form['book_review']
 
+        # Normalize some values
         if request.form['book_is_read'].lower() == 'si':
             is_read = True
         else:
@@ -78,6 +79,9 @@ def add_book():
             is_shared = True
         else:
             is_shared = False
+
+        if request.form['book_rating'] == '':
+            book_rating = 0
 
         book = Book(title = book_title,
                     year = book_year,
@@ -164,6 +168,7 @@ def books():
 @main.route('/profile')
 @login_required
 def profile():
+    # Can the following come from the database?
     quotes = {
         "Vladimir Nabokov": {
             "Saber que tienes algo bueno para leer antes de irte a la cama es una de las sensaciones más agradables",
@@ -179,6 +184,8 @@ def profile():
         "The black mamba": {
             "Dedication sees dreams come true",
             "May you always remember to enjoy the road, especially when it’s a hard one",
+            "Hard work outweighs talent — every time.",
+            "The most important thing is to try and inspire people so that they can be great in whatever they want to do.",
         },
         "Jorge Luis Borges": {
             "Que otros se enorgullezcan por lo que han escrito, yo me enorgullezco por lo que he leído",
@@ -192,7 +199,8 @@ def profile():
         "Irene Vallejo": {
             "Toda biblioteca es un viaje; todo libro un pasaporte sin caducidad",
             "La lectura, como brújula, le abría los caminos de lo desconocido. En un mundo caótico, adquirir libros es un acto de equilibrio al filo del abismo",
-            "Reunir todos los libros existentes es otra forma - simbólica, mental, pacífica - de poseer el mundo",
+            "Reunir todos los libros existentes es otra forma — simbólica, mental, pacífica — de poseer el mundo",
+            "Los libros tiene voz y hablan salvando epocas y vidas. Las librerías son esos territorios mágicos donde, en un acto de inspiración, escuchamos los ecos suaves y chisporroteantes de la memoria desconocida",
         }
     }
 
