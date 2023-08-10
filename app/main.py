@@ -69,6 +69,7 @@ def add_book():
         book_rating = request.form['book_rating']
         book_review = request.form['book_review']
 
+        # Normalize some values
         if request.form['book_is_read'].lower() == 'si':
             is_read = True
         else:
@@ -78,6 +79,9 @@ def add_book():
             is_shared = True
         else:
             is_shared = False
+
+        if request.form['book_rating'] == '':
+            book_rating = 0
 
         book = Book(title = book_title,
                     year = book_year,
