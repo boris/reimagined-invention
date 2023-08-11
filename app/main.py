@@ -1,4 +1,5 @@
 import random
+import markdown
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -261,8 +262,18 @@ def show_book(book_id):
         .join(Editorial)\
         .join(Genre)
 
+    review = db.session.query(Book.review).filter(Book.id == book_id)
+    review = markdown.markdown(review[0][0])
+
+    #rev = []
+    #for r in review:
+    #    r = dict(r)
+    #    r['content'] = markdown.markdown(r['content'])
+    #    rev.append(r)
+
     return render_template('show_book.html',
                            greeting = current_user.name,
+                           review = review,
                            book = current_book,
                            )
 
