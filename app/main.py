@@ -69,6 +69,7 @@ def add_book():
         book_pages = request.form['book_pages']
         book_rating = request.form['book_rating']
         book_review = request.form['book_review']
+        book_image_url = request.form['book_image_url']
 
         # Normalize some values
         if request.form['book_is_read'].lower() == 'si':
@@ -91,6 +92,7 @@ def add_book():
                     shared = is_shared,
                     rating = book_rating,
                     review = book_review,
+                    image_url = book_image_url,
                     id_user = current_user.id,
                     id_author = id_author,
                     id_editorial = id_editorial,
@@ -135,6 +137,7 @@ def edit_book(book_id):
         book.shared = form.book_is_shared.data == 'Si'
         book.rating = form.book_rating.data
         book.review = form.book_review.data
+        book.image_url = form.book_image_url.data
         book.tags = form.book_tags.data
 
         db.session.commit()
@@ -256,7 +259,7 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 @login_required
 def show_book(book_id):
-    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Book.image_url, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
         .filter(Book.id == book_id)\
         .join(Author)\
         .join(Editorial)\
