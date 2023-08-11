@@ -7,19 +7,20 @@
 
     <div class="container has-text-justified">
         <h1 class="title">{{ item[1] }}</h1>
-        <h2 class="text-muted">{{ item[8] }} ({{ item[9] }})</h2>
+        <h2 class="text-muted">{{ item[9] }} ({{ item[10] }})</h2>
 
         <div class="container">
             <div class="row no-gutters">
                 <div class="col-sm-5">
-                    <p><b>Género: </b>{{ item[11] }}</p>
-                    <p><b>Editorial: </b>{{ item[10] }}</p>
+                    <p><b>Género: </b>{{ item[12] }}</p>
+                    <p><b>Editorial: </b>{{ item[11] }}</p>
                     <p><b>Año: </b>{{ item[2] }}</p>
                     <p><b>¿Leído?: </b>{% if item[4] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
                     <p><b>¿Prestado?: </b>{% if item[5] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
                     <p><b>Número de páginas: </b>{{ item[3] }}</p>
                     <p><b>Puntuación: </b>{{ item[6] * '<i class="bi bi-star-fill"></i>' |safe}}</p>
-                    <p>{{ item[12] }}</p>
+                    <br>
+                    <p><img src="{{ item[8] }}"></p>
                 </div>
                 <div class="col-sm-7">
                     {{ review | safe }}
