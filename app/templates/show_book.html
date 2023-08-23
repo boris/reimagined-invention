@@ -20,7 +20,7 @@
                     <p><b>Número de páginas: </b>{{ item[3] }}</p>
                     <p><b>Puntuación: </b>{{ item[6] * '<i class="bi bi-star-fill"></i>' |safe}}</p>
                     <br>
-                    <p><img src="{{ item[8] }}"></p>
+                    <p><img src="https://covers.openlibrary.org/b/isbn/{{ item[8] }}.jpg"></p>
                 </div>
                 <div class="col-sm-7">
                     {{ review | safe }}

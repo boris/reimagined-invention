@@ -27,7 +27,7 @@ class BookForm(FlaskForm):
                               validators=[InputRequired()])
     book_rating = IntegerField('Puntuación', validators=[NumberRange(min=0, max=5)])
     book_review = TextAreaField('Reseña')
-    book_cover = StringField('Imagen')
+    book_isbn = StringField('ISBN')
     book_tags = StringField('Tags')
     submit = SubmitField('Agregar')
 
