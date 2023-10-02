@@ -32,8 +32,8 @@
     <hr>
 
     <div class="text-nowrap">
-        <a href="{{ url_for('main.edit_book', book_id = item[0]) }}">Editar Libro</a>
-        <a href="{{ url_for('main.delete_book', book_id = item[0]) }}">Borrar Libro</a>
+        <a href="{{ url_for('main.edit_book', book_id = item[0]) }}" style="text-decoration: none" title="Editar libro">📝</a>
+        <a href="{{ url_for('main.delete_book', book_id = item[0]) }}" style="text-decoration: none" title="Borrar libro - SIN CONFIRMACÓN">🗑️</a>
     </div>
     {% endfor %}
 </div>
