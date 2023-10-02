@@ -18,7 +18,7 @@
             {% for book in books %}
             <tr>
                 <td><a href="{{ url_for('main.show_book', book_id = book.id)  }}">{{ book.title  }}</a></td>
-                <td>{{ book.rating * '<i class="bi bi-star-fill"></i>' |safe  }}</td>
+                <td>{{ book.rating * '⭐' |safe  }}</td>
                 <td><a href="{{ url_for('main.show_genre', genre_id = book.id_genre) }}">{{ book.genre_name }}</a></td>
                 <td><a href="{{ url_for('main.show_editorial', editorial_id = book.id_editorial) }}">{{ book.editorial_name }}</a></td>
             </tr>
