@@ -15,10 +15,10 @@
                     <p><b>Género: </b>{{ item[12] }}</p>
                     <p><b>Editorial: </b>{{ item[11] }}</p>
                     <p><b>Año: </b>{{ item[2] }}</p>
-                    <p><b>¿Leído?: </b>{% if item[4] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
-                    <p><b>¿Prestado?: </b>{% if item[5] %}<i class="bi bi-check-square-fill"></i>{%else%}<i class="bi bi-x-square-fill"></i>{%endif%}</p>
+                    <p><b>¿Leído?: </b>{% if item[4] %}✔️{%else%}✖️{%endif%}</p>
+                    <p><b>¿Prestado?: </b>{% if item[5] %}✔️{%else%}✖️{%endif%}</p>
                     <p><b>Número de páginas: </b>{{ item[3] }}</p>
-                    <p><b>Puntuación: </b>{{ item[6] * '<i class="bi bi-star-fill"></i>' |safe}}</p>
+                    <p><b>Puntuación: </b>{{ item[6] * '⭐' |safe}}</p>
                     <br>
                     <p><img src="https://covers.openlibrary.org/b/isbn/{{ item[8] }}.jpg"></p>
                 </div>
@@ -32,8 +32,8 @@
     <hr>
 
     <div class="text-nowrap">
-        <a href="{{ url_for('main.edit_book', book_id = item[0]) }}">Editar Libro</a>
-        <a href="{{ url_for('main.delete_book', book_id = item[0]) }}">Borrar Libro</a>
+        <a href="{{ url_for('main.edit_book', book_id = item[0]) }}" style="text-decoration: none" title="Editar libro">📝</a>
+        <a href="{{ url_for('main.delete_book', book_id = item[0]) }}" style="text-decoration: none" title="Borrar libro - SIN CONFIRMACÓN">🗑️</a>
     </div>
     {% endfor %}
 </div>
