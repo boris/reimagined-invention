@@ -15,12 +15,14 @@
                 <th>Editorial</th>
             </tr>
             {% for book in books %}
+            {% with rating = book.rating %}
             <tr>
                 <td><a href="{{ url_for('main.show_book', book_id = book.id) }}">{{ book.title }}</a></td>
                 <td><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{book.author_name}}</a></td>
-                <td>{{ book.rating * '⭐' |safe }}</td>
+                <td>{{ rating * '⭐' |safe }}{{ (5 - rating) * '⚝' |safe  }}</td>
                 <td><a href="{{ url_for('main.show_editorial', editorial_id = book.id_editorial) }}">{{ book.editorial_name }}</a></td>
             </tr>
+            {% endwith %}
             {% endfor %}
         </table>
     </div>
