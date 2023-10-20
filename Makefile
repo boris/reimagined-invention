@@ -1,9 +1,16 @@
 include .env_vars
 export $(shell sed 's/=.*//' .env_vars)
 
-.PHONY: db-init db-load db-migrate db-up db-upgrade help run run-db tunnel
+.PHONY: build db-init db-load db-migrate db-up db-upgrade help run run-db tunnel
 
 .DEFAULT_GOAL := help
+
+IMAGE := "boris/reimagined-invention"
+GIT_COMMIT_HASH := $(shell git rev-parse --short HEAD)
+export GIT_COMMIT_HASH
+
+build: ## Build the docker image
+	docker build -t $(IMAGE):$(GIT_COMMIT_HASH) .
 
 db-init: ## Init the DB for SQLAlchemy
 	flask --app app --debug db init
@@ -15,7 +22,7 @@ db-help: ## Shows help for DB commands
 	@echo "db-init (if needed)"
 	@echo "db-migrate"
 	@echo "db-upgrade"
-	@echo "db-load"
+	@echo "db-load (if needed)"
 	@echo
 	@echo "See help <db-command> for help."
 
@@ -36,6 +43,9 @@ help: ## Show this help
 	@echo
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo
+
+run-docker: ## Run the Flask app in docker using latest build
+	docker run -p 5000:5000 $(IMAGE):$(GIT_COMMIT_HASH)
 
 run: ## Run the Flask app in local (debug) mode
 	flask --app app --debug run --host=0.0.0.0
