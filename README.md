@@ -28,6 +28,13 @@ See [PR/3](https://github.com/boris/reimagined-invention/pull/3) for
 documentation about v0.1.0 release.
 
 ## Usage
+Create an empty `.env_vars` file. If you want to take advantage of the Makefile,
+update it with the following content:
+```
+CF_TUNNEL=some_token
+MYSQL_ROOT_PASSWORD=some_password
+```
+Create a `config.yaml` out of `config.yaml.example` and update the values. Then:
 ```
 flask --app app --debug run
 flask --app app --debug db migrate
@@ -36,3 +43,6 @@ flask --app app --debug db upgrade
 
 ## Sample DB
 Sample DB has been added. On mysql create a new DB and restore using the dump.
+
+## Suggestions
+- Use [Cloudflare Tunnels](https://www.cloudflare.com/products/tunnel/)
