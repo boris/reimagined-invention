@@ -36,9 +36,9 @@ MYSQL_ROOT_PASSWORD=some_password
 ```
 Create a `config.yaml` out of `config.yaml.example` and update the values. Then:
 ```
-flask --app app --debug run
 flask --app app --debug db migrate
 flask --app app --debug db upgrade
+flask --app app --debug run
 ```
 
 ## Sample DB
