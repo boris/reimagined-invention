@@ -21,10 +21,12 @@ class BookForm(FlaskForm):
     book_pages = IntegerField('Número de páginas')
     book_is_read = RadioField('¿Leído?',
                               choices=['Si', 'No'],
-                              validators=[InputRequired()])
+                              validators=[InputRequired()],
+                              )
     book_is_shared = RadioField('¿Prestado?',
-                              choices=['Si', 'No'],
-                              validators=[InputRequired()])
+                                choices=['Si', 'No'],
+                                validators=[InputRequired()],
+                                )
     book_rating = IntegerField('Puntuación', validators=[NumberRange(min=0, max=5)])
     book_review = TextAreaField('Reseña')
     book_isbn = StringField('ISBN')

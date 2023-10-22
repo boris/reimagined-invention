@@ -125,6 +125,10 @@ def delete_book(book_id):
 def edit_book(book_id):
     book = Book.query.get_or_404(book_id)
     form = BookForm(author_id=book.id_author, editorial_id=book.id_editorial, genre_id=book.id_genre)
+
+    form.book_is_read.data = 'Si' if book.read else 'No'
+    form.book_is_shared.data = 'Si' if book.shared else 'No'
+
     if form.validate_on_submit():
         book.title = form.book_title.data
         book.author.name = form.author_name.data
