@@ -41,6 +41,20 @@ flask --app app --debug db upgrade
 flask --app app --debug run
 ```
 
+## Building images
+It uses a `Makefile`, and it's as simply as:
+```
+make build
+make push
+```
+
+This will build two images:
+- One named `latest`
+- One named after the latest git tag
+
+Images will be pused to AWS ECR private repository, until this project gets
+open-sourced. Which will happen once it's live.
+
 ## Sample DB
 Sample DB has been added. On mysql create a new DB and restore using the dump.
 

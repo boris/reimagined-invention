@@ -5,12 +5,19 @@ export $(shell sed 's/=.*//' .env_vars)
 
 .DEFAULT_GOAL := help
 
-IMAGE := "boris/reimagined-invention"
+TAG := $(shell git describe --tags --abbrev=0)
+IMAGE := "111285186890.dkr.ecr.us-east-1.amazonaws.com/reimagined-invention"
 GIT_COMMIT_HASH := $(shell git rev-parse --short HEAD)
 export GIT_COMMIT_HASH
 
 build: ## Build the docker image
 	docker build -t $(IMAGE):$(GIT_COMMIT_HASH) .
+	docker tag $(IMAGE):$(GIT_COMMIT_HASH) $(IMAGE):$(TAG)
+
+push: ## Push the docker image to ECR
+	#aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 111285186890.dkr.ecr.us-east-1.amazonaws.com
+	docker push $(IMAGE):$(GIT_COMMIT_HASH)
+	docker push $(IMAGE):$(TAG)
 
 db-init: ## Init the DB for SQLAlchemy
 	flask --app app --debug db init
