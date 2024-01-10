@@ -226,6 +226,15 @@ def profile():
     books_shared = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.shared == True)).count()
 
     # Queries for data analysis
+    authors_with_most_books_subquery = db.session.query(Book.id_author).filter(Book.id_user == current_user.id).subquery()
+    authors_with_most_books_query = db.session.query(func.count(Book.id), Book.id_author, Author.name)\
+                .filter(Author.id.in_(authors_with_most_books_subquery))\
+                .join(Author, Book.id_author == Author.id)\
+                .group_by(Book.id_author)\
+                .order_by(desc(func.count(Book.id)))\
+                .limit(5)
+    authors_with_most_books = [(row[0], row[1], row[2]) for row in authors_with_most_books_query.all()]
+
     books_by_country_subquery = db.session.query(Book.id_author).filter(Book.id_user == current_user.id).subquery()
     books_by_country_query = db.session.query(Author.country, func.count()).\
                 filter(Author.id.in_(books_by_country_subquery)).\
@@ -244,6 +253,7 @@ def profile():
                            books_read = books_read,
                            books_unread = books_unread,
                            books_shared = books_shared,
+                           authors_with_most_books = authors_with_most_books,
                            books_by_country = books_by_country,
                            )
 

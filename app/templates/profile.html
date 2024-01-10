@@ -42,7 +42,7 @@
 
         <h2>Análisis de Datos.</h2>
 
-        <h3>Cantidad de libros por país de author</h3>
+        <h3>Cantidad de libros por país de autor</h3>
         <table class="table is-halfwidth is-stripped">
             <tbody>
                 <tr class="has-background-success-light">
@@ -58,6 +58,21 @@
             </tbody>
         </table>
 
+        <h3>Autores con más libros</h3>
+        <table class="table is-halfwidth is-stripped">
+            <tbody>
+                <tr class="has-background-success-light">
+                    <th>Autor</th>
+                    <th>Cantidad</th>
+                </tr>
+                {% for count, author_id, author in authors_with_most_books|sort(attribute='count_1') %}
+                <tr>
+                    <td><a href="{{ url_for('main.show_author', author_id = author_id) }}">{{ author }}</a></td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
