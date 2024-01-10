@@ -15,7 +15,6 @@ build: ## Build the docker image
 	docker tag $(IMAGE):$(GIT_COMMIT_HASH) $(IMAGE):$(TAG)
 
 push: ## Push the docker image to ECR
-	#aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 111285186890.dkr.ecr.us-east-1.amazonaws.com
 	docker push $(IMAGE):$(GIT_COMMIT_HASH)
 	docker push $(IMAGE):$(TAG)
 
