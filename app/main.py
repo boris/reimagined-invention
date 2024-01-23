@@ -17,9 +17,9 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     if current_user.is_authenticated:
-        return render_template('index.html',
-                               greeting = current_user.name,
-                               )
+        return redirect(url_for('main.profile',
+                                greeting = current_user.name,
+                                ))
     else:
         return render_template('index.html',)
 
