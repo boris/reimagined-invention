@@ -9,4 +9,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Run DB migrations every time
-CMD make db-migrate && make db-upgrade && make run
+#CMD make db-migrate && make db-upgrade && make run
+CMD ["/bin/sh"]
