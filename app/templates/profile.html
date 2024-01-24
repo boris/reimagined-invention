@@ -12,9 +12,9 @@
         -->
         <div class="container has-text-centered">
             <h3 class="text-muted">
-                <i>{{ quote }}.</i>
+                <i>{{ quote[0] | safe }}.</i>
                 <br>
-                <p align="right"><b>{{ author }}.</b></p>
+                <p align="right"><b>{{ quote[1] | safe }}.</b></p>
             </h2>
         </div>
 
