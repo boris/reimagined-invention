@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import (StringField, IntegerField, RadioField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField)
 from wtforms.validators import InputRequired, NumberRange, DataRequired, EqualTo
 
-from .models import Book, Author, Editorial, Genre
+from .models import Book, Author, Editorial, Genre, Quotes
 from . import db
 
 class BookForm(FlaskForm):
@@ -53,3 +53,7 @@ class SignupForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class QuoteForm(FlaskForm):
+    quote = TextAreaField('Cita', [DataRequired()])
+    owner = StringField('Autor', [DataRequired()])
+    submit = SubmitField('Submit')
