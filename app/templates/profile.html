@@ -12,9 +12,9 @@
         -->
         <div class="container has-text-centered">
             <h3 class="text-muted">
-                <i>{{ quote }}.</i>
+                <i>{{ quote[0] | safe }}.</i>
                 <br>
-                <p align="right"><b>{{ author }}.</b></p>
+                <p align="right"><b>{{ quote[1] | safe }}.</b></p>
             </h2>
         </div>
 
@@ -40,69 +40,7 @@
 
         <br>
 
-        <h2>Análisis de Datos.</h2>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm">
-
-                    <h3>Cantidad de libros por país de autor</h3>
-                    <table class="table is-halfwidth is-stripped">
-                        <tbody>
-                            <tr class="has-background-success-light">
-                                <th>País</th>
-                                <th>Cantidad</th>
-                            </tr>
-                            {% for country, count in books_by_country|sort(attribute='count_1') %}
-                            <tr>
-                                <td><a href="{{ url_for('main.show_country', author_country = country) }}">{{ country }}</a></td>
-                                <td>{{ count }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-sm">
-                    <h3>Autores con más libros</h3>
-                    <table class="table is-halfwidth is-stripped">
-                        <tbody>
-                            <tr class="has-background-success-light">
-                                <th>Autor</th>
-                                <th>Cantidad</th>
-                            </tr>
-                            {% for count, author_id, author in authors_with_most_books|sort(attribute='count_1') %}
-                            <tr>
-                                <td><a href="{{ url_for('main.show_author', author_id = author_id) }}">{{ author }}</a></td>
-                                <td>{{ count }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-sm">
-                    <h3>Editoriales con más libros</h3>
-                    <table class="table is-halfwidth is-stripped">
-                        <tbody>
-                            <tr class="has-background-success-light">
-                                <th>Editorial</th>
-                                <th>Cantidad</th>
-                            </tr>
-                            {% for count, editorial_id, editorial in editorials_with_most_books|sort(attribute='count_1') %}
-                            <tr>
-                                <td><a href="{{ url_for('main.show_editorial', editorial_id = editorial_id) }}">{{ editorial }}</a></td>
-                                <td>{{ count }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        {% include '_data_analisys.html' %}
     </div>
 </div>
 

@@ -8,18 +8,18 @@ from sqlalchemy import func, desc
 # This is for debug
 import traceback
 
-from app.models import User, Book, Author, Editorial, Genre
+from app.models import User, Book, Author, Editorial, Genre, Quotes
 from . import db
-from .forms import BookForm
+from .forms import BookForm, QuoteForm
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
     if current_user.is_authenticated:
-        return render_template('index.html',
-                               greeting = current_user.name,
-                               )
+        return redirect(url_for('main.profile',
+                                greeting = current_user.name,
+                                ))
     else:
         return render_template('index.html',)
 
@@ -116,6 +116,26 @@ def add_book():
                            )
 
 
+@main.route('/add_quote', methods = ['GET', 'POST'])
+@login_required
+def add_quote():
+    form = QuoteForm()
+
+    if form.is_submitted():
+        quote = Quotes(quote = form.quote.data,
+                       owner = form.owner.data,
+                       )
+        db.session.add(quote)
+        db.session.commit()
+
+        return redirect(url_for('main.profile'))
+
+    return render_template('add_quote.html',
+                           greeting = current_user.name,
+                           form = form,
+                           )
+
+
 @main.route('/delete_book/<int:book_id>', methods = ['GET', 'POST'])
 @login_required
 def delete_book(book_id):
@@ -181,44 +201,9 @@ def books():
 @main.route('/profile')
 @login_required
 def profile():
-    # Can the following come from the database?
-    quotes = {
-        "Vladimir Nabokov": {
-            "Saber que tienes algo bueno para leer antes de irte a la cama es una de las sensaciones más agradables",
-            "La lectura es una de las formas de la felicidad y debería ser accesible para todos",
-        },
-        "Lloyd Alexander": {
-            "Sigue leyendo. Es una de las más maravillosas aventuras que cualquier persona puede tener"
-        },
-        "Benjamin Franklin": {
-            "La lectura es para la mente lo que el ejercicio para el cuerpo",
-            "La inversión en conocimiento paga el mejor interés"
-        },
-        "The black mamba": {
-            "Dedication sees dreams come true",
-            "May you always remember to enjoy the road, especially when it’s a hard one",
-            "Hard work outweighs talent — every time.",
-            "The most important thing is to try and inspire people so that they can be great in whatever they want to do.",
-        },
-        "Jorge Luis Borges": {
-            "Que otros se enorgullezcan por lo que han escrito, yo me enorgullezco por lo que he leído",
-            "La lectura es una conversación con los hombres más ilustres de los siglos pasados",
-            "De los diversos instrumentos del hombre, el más asombroso es, sin duda, el libro. Los demás son extensiones de su cuerpo. El microscopio, el telescopio, son extensiones de su vista; el teléfono es extensión de la voz; luego tenemos el arado y la espada, extensiones del brazo. Pero el libro es otra cosa: el libro es una extensión de la memoria y la imaginación",
-        },
-        "Roberto Bolaño": {
-            "La lectura es una forma de soledad, de aislamiento, de ruptura de la vida inmediata, mientras que al mismo tiempo es una apertura a un mundo diferente y quizás mejor",
-            "La lectura es una amistad",
-        },
-        "Irene Vallejo": {
-            "Toda biblioteca es un viaje; todo libro un pasaporte sin caducidad",
-            "La lectura, como brújula, le abría los caminos de lo desconocido. En un mundo caótico, adquirir libros es un acto de equilibrio al filo del abismo",
-            "Reunir todos los libros existentes es otra forma — simbólica, mental, pacífica — de poseer el mundo",
-            "Los libros tiene voz y hablan salvando epocas y vidas. Las librerías son esos territorios mágicos donde, en un acto de inspiración, escuchamos los ecos suaves y chisporroteantes de la memoria desconocida",
-        }
-    }
+    quote = db.session.query(Quotes.quote, Quotes.owner).order_by(func.random()).first()
 
-    author = random.choice(list(quotes.keys()))
-    quote = random.choice(list(quotes[author]))
+    print(quote)
 
     books_total = db.session.query(Book.id).filter(Book.id_user == current_user.id).count()
     books_read = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == True)).count()
@@ -254,7 +239,6 @@ def profile():
 
 
     return render_template('profile.html',
-                           author = author,
                            quote = quote,
                            name = current_user.name,
                            greeting = current_user.name,
@@ -265,6 +249,7 @@ def profile():
                            authors_with_most_books = authors_with_most_books,
                            editorials_with_most_books = editorials_with_most_books,
                            books_by_country = books_by_country,
+                           encoding = 'utf-8',
                            )
 
 
