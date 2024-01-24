@@ -203,8 +203,6 @@ def books():
 def profile():
     quote = db.session.query(Quotes.quote, Quotes.owner).order_by(func.random()).first()
 
-    print(quote)
-
     books_total = db.session.query(Book.id).filter(Book.id_user == current_user.id).count()
     books_read = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == True)).count()
     books_unread = db.session.query(Book.id).filter((Book.id_user == current_user.id) & (Book.read == False)).count()
