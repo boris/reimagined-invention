@@ -72,6 +72,20 @@ LOCK TABLES `tag` WRITE;
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `quote`
+--
+LOCK TABLES `quotes` WRITE;
+INSERT INTO `quotes` (owner, quote) VALUES ("Vladimir Nabokov", "Saber que tienes algo bueno para leer antes de irte a la cama es una de las sensaciones más agradables que existen.");
+INSERT INTO `quotes` (owner, quote) VALUES ("Vladimir Nabokov", "La lectura es una de las formas de la felicidad y debería ser accesible para todos");
+INSERT INTO `quotes` (owner, quote) VALUES ("Lloyd Alexander", "Sigue leyendo. Es una de las más maravillosas aventuras que cualquier persona puede tener");
+INSERT INTO `quotes` (owner, quote) VALUES ("The black mamba", "Dedication sees dreams come true");
+INSERT INTO `quotes` (owner, quote) VALUES ("The black mamba", "May you always remember to enjoy the road, especially when it’s a hard one");
+INSERT INTO `quotes` (owner, quote) VALUES ("The black mamba", "Hard work outweighs talent — every time");
+INSERT INTO `quotes` (owner, quote) VALUES ("The black mamba", "The most important thing is to try and inspire people so that they can be great in whatever they want to do");
+UNLOCK TABLES;
+
+
+--
 -- Dumping data for table `user`
 --
 
