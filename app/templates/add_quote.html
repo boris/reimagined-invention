@@ -9,7 +9,7 @@
         <form method="POST" action="/add_quote">
             {{ form.hidden_tag() }}
             <p>{{ form.owner.label }} {{ form.owner(size=20) }}</p>
-            <p>{{ form.quote.label }} {{ form.quote(size=20) }}</p>
+            <p>{{ form.quote.label }} {{ form.quote(class_='wide-textarea') }}</p>
             <br>
             {{ form.submit }}
         </form>
