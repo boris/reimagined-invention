@@ -44,6 +44,9 @@ db-up: ## Starts the DB engine using docker
 db-upgrade: ## Applies the migration plan
 	flask --app app --debug db upgrade
 
+db-stamp: ## Stamp head (store the initial migration as the current migration)
+	flask --app app --debug db stamp head
+
 help: ## Show this help
 	@echo "If in doubt, start with make run"
 	@echo
