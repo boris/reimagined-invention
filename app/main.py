@@ -347,9 +347,25 @@ def show_genre(genre_id):
                            )
 
 
-@main.route('/test/<int:book_id>', methods = ['GET', 'POST'])
+@main.route('/show_tag/<string:tag>')
 @login_required
-def test(book_id):
-    book = db.session.query(Book.title).filter(Book.id == book_id)
+def show_tag(tag):
+    books_tagged = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Book.id_genre, Book.id_editorial, Editorial.name.label('editorial_name'), Author.name.label('author_name'), Genre.name.label('genre_name'))\
+        .filter(Book.tags.like('%' + tag + '%'))\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
+
+    return render_template('show_tag.html',
+                           greeting = current_user.name,
+                           tag = tag,
+                           books_tagged = books_tagged,
+                           )
+
+
+@main.route('/test/<string:tag>', methods = ['GET', 'POST'])
+@login_required
+def test(tag):
+    book = db.session.query(Book.title).filter(Book.tags.like('%' + tag + '%')).all()
 
     return render_template('test.html', book=book)
