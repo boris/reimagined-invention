@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-body">
+    <div class="container has-text-justified is-fluid">
+        <h1 class="Title">Tag: {{tag}}</h1>
+        <br>
+        <table class="table is-fullwidth">
+            <tr class="has-background-success-light">
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Puntuación</th>
+                <th>Género</th>
+            </tr>
+            {% for book in books_tagged %}
+            {% with rating = book.rating %}
+            <tr>
+                <td><a href="{{ url_for('main.show_book', book_id = book.id)  }}">{{ book.title  }}</a></td>
+                <td><a href="{{ url_for('main.show_author', author_id = book.id_author) }}">{{ book.author_name }}</a></td>
+                <td>{{ rating * '⭐' |safe }}{{ (5 - rating) * '⚝' |safe }}</td>
+                <td><a href="{{ url_for('main.show_genre', genre_id = book.id_genre) }}">{{ book.genre_name }}</a></td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
