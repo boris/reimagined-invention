@@ -1,11 +1,6 @@
 from flask_login import UserMixin
 from . import db
 
-# many-to-many books/tags
-tags = db.Table('books_tags',
-                db.Column('id_tag', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
-                db.Column('id_book', db.Integer, db.ForeignKey('book.id'), primary_key=True)
-        )
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
@@ -22,6 +17,7 @@ class Book(db.Model):
     shared = db.Column(db.Boolean, default=False)
     rating = db.Column(db.Integer)
     review = db.Column(db.Text)
+    tags = db.Column(db.String(255))
     isbn = db.Column(db.String(255))
     id_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     id_author = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
@@ -31,8 +27,6 @@ class Book(db.Model):
     author = db.relationship('Author', backref='books')
     editorial = db.relationship('Editorial', backref='books')
     genre = db.relationship('Genre', backref='books')
-
-    book_tags = db.relationship('Tag', secondary=tags, backref=db.backref('books', lazy='dynamic'))
 
 
 class Author(db.Model):
@@ -44,11 +38,6 @@ class Author(db.Model):
 class Editorial(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
-
-
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(255), primary_key=True)
 
 
 class Genre(db.Model):
