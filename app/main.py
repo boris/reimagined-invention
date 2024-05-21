@@ -74,6 +74,7 @@ def add_book():
         book_pages = request.form['book_pages']
         book_rating = request.form['book_rating']
         book_review = request.form['book_review']
+        book_tags = request.form['book_tags']
         book_isbn = request.form['book_isbn']
 
         # Normalize some values
@@ -97,6 +98,7 @@ def add_book():
                     shared = is_shared,
                     rating = book_rating,
                     review = book_review,
+                    tags = book_tags,
                     isbn = book_isbn,
                     id_user = current_user.id,
                     id_author = id_author,
@@ -271,7 +273,7 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 @login_required
 def show_book(book_id):
-    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Book.isbn, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Book.tags, Book.isbn, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
         .filter(Book.id == book_id)\
         .join(Author)\
         .join(Editorial)\
