@@ -29,8 +29,12 @@ db-help: ## Shows help for DB commands
 	@echo "db-migrate"
 	@echo "db-upgrade"
 	@echo "db-load (if needed)"
+	@echo "db-connect"
 	@echo
 	@echo "See help <db-command> for help."
+
+db-connect: ## Connect to the DB
+	mysql -u root -p reimagined_invention -h 127.0.0.1
 
 db-load: ## Dumps a sample dataset into the DB
 	mysql -h 127.0.0.1 -u root -p reimagined_invention < reimagined_invention.sql
