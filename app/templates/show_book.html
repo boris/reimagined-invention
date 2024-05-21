@@ -22,10 +22,10 @@
                     <p><b>Puntuación: </b>{{ rating * '⭐' |safe}}{{ (5 - rating) * '⚝' |safe }}</p>
                     <p><b>ISBN: </b>{{ item[9] }}</p>
                     <p><b>Tags: </b>
-                    {% set tag_list = item[8].split(',')%}
+                    {% set tag_list = item[8].split(', ')%}
                     <ul>
                     {% for tag in tag_list %}
-                    <li>{{ tag }}</li>
+                    <li><a href="{{ url_for('main.show_tag', tag = tag)}}">{{tag}}</a></li>
                     {% endfor %}
                     </ul>
                     </p>
