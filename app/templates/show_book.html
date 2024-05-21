@@ -13,13 +13,22 @@
         <div class="container">
             <div class="row no-gutters">
                 <div class="col-sm-5">
-                    <p><b>Género: </b>{{ item[12] }}</p>
-                    <p><b>Editorial: </b>{{ item[11] }}</p>
+                    <p><b>Género: </b>{{ item[13] }}</p>
+                    <p><b>Editorial: </b>{{ item[12] }}</p>
                     <p><b>Año: </b>{{ item[2] }}</p>
                     <p><b>¿Leído?: </b>{% if item[4] %}✔️{%else%}✖️{%endif%}</p>
                     <p><b>¿Prestado?: </b>{% if item[5] %}✔️{%else%}✖️{%endif%}</p>
                     <p><b>Número de páginas: </b>{{ item[3] }}</p>
                     <p><b>Puntuación: </b>{{ rating * '⭐' |safe}}{{ (5 - rating) * '⚝' |safe }}</p>
+                    <p><b>ISBN: </b>{{ item[9] }}</p>
+                    <p><b>Tags: </b>
+                    {% set tag_list = item[8].split(',')%}
+                    <ul>
+                    {% for tag in tag_list %}
+                    <li>{{ tag }}</li>
+                    {% endfor %}
+                    </ul>
+                    </p>
                     <br>
                     <p><img src="https://covers.openlibrary.org/b/isbn/{{ item[8] }}.jpg"></p>
                 </div>
