@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc
+from collections import Counter
 
 # This is for debug
 import traceback
@@ -237,6 +238,14 @@ def profile():
                 limit(5)
     books_by_country = [(row[0], row[1]) for row in books_by_country_query.all()]
 
+    # Get top 5 tags
+    tag_counter = Counter()
+    tags_results = db.session.query(Book.tags).filter(Book.id_user == current_user.id).all()
+    for row in tags_results:
+        tags = row[0].split(', ')
+        tag_counter.update(tags)
+
+    tags = tag_counter.most_common(5)
 
     return render_template('profile.html',
                            quote = quote,
@@ -249,6 +258,7 @@ def profile():
                            authors_with_most_books = authors_with_most_books,
                            editorials_with_most_books = editorials_with_most_books,
                            books_by_country = books_by_country,
+                           tags = tags,
                            encoding = 'utf-8',
                            )
 
