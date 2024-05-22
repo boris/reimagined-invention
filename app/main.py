@@ -373,9 +373,17 @@ def show_tag(tag):
                            )
 
 
-@main.route('/test/<string:tag>', methods = ['GET', 'POST'])
+@main.route('/test', methods = ['GET', 'POST'])
 @login_required
-def test(tag):
-    book = db.session.query(Book.title).filter(Book.tags.like('%' + tag + '%')).all()
+def test():
+    # Get all the tags
+    tags = db.session.query(Book.tags).filter(Book.id_user == current_user.id).all()
 
-    return render_template('test.html', book=book)
+    unique_tags = set()
+    for tag in tags:
+        for t in tag[0].split(','):
+            unique_tags.add(t.strip())
+
+    tags = list(unique_tags)
+
+    return render_template('test.html', book=tags)
