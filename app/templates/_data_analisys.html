@@ -20,6 +20,24 @@
             </table>
 
         </div>
+
+        <div class="col-sm">
+            <h3>Tags más populares</h3>
+            <table class="table is-halfwidth is-stripped">
+                <tbody>
+                    <tr class="has-background-success-light">
+                        <th>Tag</th>
+                        <th>Cantidad</th>
+                    </tr>
+                    {% for tag, count in tags|sort(attribute='count_1') %}
+                    <tr>
+                        <td><a href="{{ url_for('main.show_tag', tag = tag) }}">{{ tag }}</a></td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 

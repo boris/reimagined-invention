@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc
+from collections import Counter
 
 # This is for debug
 import traceback
@@ -74,6 +75,7 @@ def add_book():
         book_pages = request.form['book_pages']
         book_rating = request.form['book_rating']
         book_review = request.form['book_review']
+        book_tags = request.form['book_tags']
         book_isbn = request.form['book_isbn']
 
         # Normalize some values
@@ -97,6 +99,7 @@ def add_book():
                     shared = is_shared,
                     rating = book_rating,
                     review = book_review,
+                    tags = book_tags,
                     isbn = book_isbn,
                     id_user = current_user.id,
                     id_author = id_author,
@@ -235,6 +238,14 @@ def profile():
                 limit(5)
     books_by_country = [(row[0], row[1]) for row in books_by_country_query.all()]
 
+    # Get top 5 tags
+    tag_counter = Counter()
+    tags_results = db.session.query(Book.tags).filter(Book.id_user == current_user.id).all()
+    for row in tags_results:
+        tags = row[0].split(', ')
+        tag_counter.update(tags)
+
+    tags = tag_counter.most_common(5)
 
     return render_template('profile.html',
                            quote = quote,
@@ -247,6 +258,7 @@ def profile():
                            authors_with_most_books = authors_with_most_books,
                            editorials_with_most_books = editorials_with_most_books,
                            books_by_country = books_by_country,
+                           tags = tags,
                            encoding = 'utf-8',
                            )
 
@@ -271,7 +283,7 @@ def show_author(author_id):
 @main.route('/show_book/<int:book_id>')
 @login_required
 def show_book(book_id):
-    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Book.isbn, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
+    current_book = db.session.query(Book.id, Book.title, Book.year, Book.pages, Book.read, Book.shared, Book.rating, Book.review, Book.tags, Book.isbn, Author.name.label('author_name'), Author.country.label('author_country'), Editorial.name.label('editorial_name'), Genre.name.label('genre_name'))\
         .filter(Book.id == book_id)\
         .join(Author)\
         .join(Editorial)\
@@ -345,9 +357,33 @@ def show_genre(genre_id):
                            )
 
 
-@main.route('/test/<int:book_id>', methods = ['GET', 'POST'])
+@main.route('/show_tag/<string:tag>')
 @login_required
-def test(book_id):
-    book = db.session.query(Book.title).filter(Book.id == book_id)
+def show_tag(tag):
+    books_tagged = db.session.query(Book.id, Book.title, Book.id_author, Book.rating, Book.id_genre, Book.id_editorial, Editorial.name.label('editorial_name'), Author.name.label('author_name'), Genre.name.label('genre_name'))\
+        .filter(Book.tags.like('%' + tag + '%'))\
+        .join(Author)\
+        .join(Editorial)\
+        .join(Genre)
 
-    return render_template('test.html', book=book)
+    return render_template('show_tag.html',
+                           greeting = current_user.name,
+                           tag = tag,
+                           books_tagged = books_tagged,
+                           )
+
+
+@main.route('/test', methods = ['GET', 'POST'])
+@login_required
+def test():
+    # Get all the tags
+    tags = db.session.query(Book.tags).filter(Book.id_user == current_user.id).all()
+
+    unique_tags = set()
+    for tag in tags:
+        for t in tag[0].split(','):
+            unique_tags.add(t.strip())
+
+    tags = list(unique_tags)
+
+    return render_template('test.html', book=tags)
