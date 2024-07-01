@@ -1,9 +1,10 @@
 import random
 import markdown
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc
+from sqlalchemy.exc import OperationalError
 from collections import Counter
 
 # This is for debug
@@ -23,6 +24,20 @@ def index():
                                 ))
     else:
         return render_template('index.html',)
+
+
+@main.route('/healthz')
+def healthz():
+    try:
+        with db.engine.connect() as connection:
+            connection.execute('SELECT 1')
+            db_status = "ok"
+    except OperationalError:
+        db_status = "error"
+
+    service_status = "ok"
+
+    return jsonify({'status': service_status, 'db': db_status})
 
 
 @main.route('/add_book', methods = ['GET', 'POST'])
