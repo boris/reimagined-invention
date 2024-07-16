@@ -255,7 +255,7 @@ def profile():
 
     # Get top 5 tags
     tag_counter = Counter()
-    tags_results = db.session.query(Book.tags).filter(Book.id_user == current_user.id).all()
+    tags_results = db.session.query(Book.tags).filter(Book.id_user == current_user.id).filter(Book.tags != "").all()
     for row in tags_results:
         tags = row[0].split(', ')
         tag_counter.update(tags)
